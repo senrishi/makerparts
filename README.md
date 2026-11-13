@@ -8,3 +8,11 @@ Requires Node.js 22+. Run `npm install`, `npm run check`. Load `dist/chrome` as 
 Save the current product from the toolbar, choose or create a project, review its name and price, and categorize it. Manage all projects in a full-page library. Data stays in the browser profile; JSON backups allow transfer between browsers.
 
 See [project details](docs/PROJECT.md) and [progress](docs/PROGRESS.md).
+
+## Commands
+- `npm run check` — domain tests and both browser builds.
+- `npm run lint:firefox` — Mozilla extension validation.
+- `npm run smoke` — real Chromium integration test, including profile persistence after a full browser restart. Uses macOS Chromium by default; set `CHROMIUM_PATH` for another installation.
+- `npm run package` — unsigned Chrome/Firefox ZIPs in `artifacts/`.
+
+No runtime dependencies or server. Developer tooling is locked in `package-lock.json`. The Firefox ZIP must be Mozilla-signed before permanent installation in standard Firefox.

@@ -12,3 +12,17 @@
 - Added serialized persistent writes, validated backup import and JSON export.
 - Added model tests covering save/edit/delete, totals, backup round trips and invalid data.
 - `npm run check` passes (4 tests; both browser builds).
+
+## Milestone 3 — validation and installation handoff
+- Chromium integration test passed: project creation, part save/edit, quantities and totals, popup save, and persistence through full browser shutdown/relaunch using the same profile.
+- Visually inspected the rendered project library (`artifacts/library.png`).
+- Mozilla `web-ext lint`: zero errors, notices or warnings.
+- Added category suggestions for common component names; all suggested metadata remains editable.
+- Added reproducible packaging, dependency lockfile and permanent-install instructions.
+- Produced unsigned browser ZIPs in `artifacts/`.
+- Remaining external step: sign the Firefox ZIP with the owner's Mozilla developer account and install the signed XPI. No Firefox runtime is installed in this environment; Firefox runtime and signed-install verification remain untested.
+
+## Future improvements
+- Store-specific product metadata adapters, if generic structured metadata proves insufficient.
+- Optional duplicate detection and CSV BOM export.
+- Signed distribution and update hosting after the owner chooses a distribution channel.

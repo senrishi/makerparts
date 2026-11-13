@@ -26,3 +26,7 @@ export function mutate(state, action) {
  return validateState(s);
 }
 export function totals(parts) { const result={}; for(const p of parts) if(p.price!==null)result[p.currency]=(result[p.currency]||0)+p.price*p.quantity; return result; }
+export function suggestCategory(name='') {
+ const rules=[[/\b(esp32|esp8266|arduino|raspberry pi|stm32|rp2040|microcontroller|pico)\b/i,CATEGORIES[0]],[/\b(resistor|capacitor|inductor|potentiometer|resistance)\b/i,CATEGORIES[2]],[/\b(sensor|accelerometer|gyroscope|dht\d*|bme280)\b/i,CATEGORIES[3]],[/\b(mosfet|transistor|diode|op.?amp|led)\b/i,CATEGORIES[1]],[/\b(battery|power supply|charger|buck|boost|regulator)\b/i,CATEGORIES[4]],[/\b(connector|cable|jumper|header)\b/i,CATEGORIES[5]],[/\b(display|oled|lcd)\b/i,CATEGORIES[6]],[/\b(motor|servo|actuator|stepper)\b/i,CATEGORIES[7]]];
+ return rules.find(([pattern])=>pattern.test(name))?.[1] || 'Other';
+}

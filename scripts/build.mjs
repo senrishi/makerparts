@@ -5,7 +5,7 @@ for(const target of ['chrome','firefox']){
  const manifest={...base,background:target==='chrome'?{service_worker:'background.js',type:'module'}:{scripts:['background-entry.js'],type:'module'}};
  // Chrome extension icons require raster assets; use generated PNGs for both browsers.
  manifest.icons={'48':'icon48.png','128':'icon128.png'};
- if(target==='firefox')manifest.browser_specific_settings={gecko:{id:'makerparts@local.extension',strict_min_version:'140.0',data_collection_permissions:{required:['none']}}};
+ if(target==='firefox')manifest.browser_specific_settings={gecko_android:{strict_min_version:'142.0'},gecko:{id:'makerparts@local.extension',strict_min_version:'140.0',data_collection_permissions:{required:['none']}}};
  await writeFile(`${dir}/manifest.json`,JSON.stringify(manifest,null,2));await writeFile(`${dir}/background-entry.js`,"import './background.js';\n");
 }
 console.log('Built dist/chrome and dist/firefox');
