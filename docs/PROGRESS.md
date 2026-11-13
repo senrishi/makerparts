@@ -26,3 +26,9 @@
 - Store-specific product metadata adapters, if generic structured metadata proves insufficient.
 - Optional duplicate detection and CSV BOM export.
 - Signed distribution and update hosting after the owner chooses a distribution channel.
+
+## Compatibility fix — older Firefox temporary installs
+- Reported installation failure came from the release build's Firefox 140 minimum.
+- Added `dist/firefox-legacy` for Firefox 115–139 with the same functionality and extension ID, omitting the newer data-consent manifest field.
+- Kept the Firefox 140+ signing build and its no-data-collection declaration intact.
+- Legacy build is for temporary local testing; runtime compatibility is not yet verified.
