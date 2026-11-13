@@ -166,3 +166,9 @@
 - Preference is persisted inside the library and included in backups. Older libraries infer the destination from their final added part; deleted/stale destinations fall back to Create a new project.
 - Added unit coverage for persistence, cart saves, edits, deletion and old backups; updated Chromium checks to verify remembered selection across browser restart and in Save Cart.
 - Validation: 25 unit tests and full Chromium integration pass, including remembered selection after a full browser restart and in Save Cart. Existing edit/project context overrides the remembered default; manually choosing Create a new project still supports the blank-name Miscellaneous fallback.
+
+## Latest-only artifact cleanup
+- Removed 10 old generated archives and retained only current 0.1.3 Chrome, Firefox, Mercury and source packages.
+- Moved the current UI screenshots into artifacts/previews/ and updated screenshot output/CI upload paths.
+- Packaging and reviewer-source packaging now prune older recognized MakerParts packages after producing the current output. Unknown files and directories are preserved.
+- Verified actual retained files, generated the current reviewer-source ZIP and passed formatting checks. Browser profiles and extension library data were not touched.

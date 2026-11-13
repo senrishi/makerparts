@@ -28,3 +28,5 @@ Cart capture uses a self-contained `capture/cart.js` function executed in the st
 Shopify endpoint behavior: [Ajax Cart API](https://shopify.dev/docs/api/ajax/reference/cart).
 
 The build combines the source CSS modules into one generated `styles/main.css` and adds a content-hash revision to each page's stylesheet link. This prevents cached imported styles from lagging behind new markup. Shared `save-feedback.js` renders accessible confirmation and closes transient capture views only after successful persistence.
+
+Artifact retention keeps only the current package.json version of generated Chrome/Firefox ZIPs, Mercury XPI and reviewer-source ZIP. Older recognized MakerParts packages are pruned after packaging succeeds. UI screenshots live under `artifacts/previews/` so the root contains only the current install/review files.

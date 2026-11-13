@@ -56,8 +56,11 @@ await page.locator("summary").click();
 await page.locator("select[name=status]").selectOption("received");
 await page.getByRole("button", { name: "Save changes" }).click();
 await page.locator(".status.received").waitFor();
-await mkdir("artifacts", { recursive: true });
-await page.screenshot({ path: "artifacts/library.png", fullPage: true });
+await mkdir("artifacts/previews", { recursive: true });
+await page.screenshot({
+  path: "artifacts/previews/library.png",
+  fullPage: true,
+});
 console.log("Saved and edited");
 await context.close();
 context = await launch();
@@ -136,7 +139,10 @@ await page
   .waitFor();
 assert.equal(await page.locator(".part-card").count(), 0);
 await page.setViewportSize({ width: 1280, height: 800 });
-await page.screenshot({ path: "artifacts/projects-home.png", fullPage: true });
+await page.screenshot({
+  path: "artifacts/previews/projects-home.png",
+  fullPage: true,
+});
 await page
   .locator(".project-tile")
   .filter({ hasText: "Miscellaneous" })
@@ -146,7 +152,10 @@ assert.equal(
   await page.getByRole("link", { name: "ESP32 board", exact: true }).count(),
   0,
 );
-await page.screenshot({ path: "artifacts/library-dark.png", fullPage: true });
+await page.screenshot({
+  path: "artifacts/previews/library-dark.png",
+  fullPage: true,
+});
 const shop = await context.newPage();
 await context.route("https://makerbazar.in/products/test-board*", (route) =>
   route.fulfill({
@@ -189,11 +198,14 @@ for (const viewport of [
 }
 await capture.setViewportSize({ width: 1000, height: 650 });
 await capture.screenshot({
-  path: "artifacts/capture-resized.png",
+  path: "artifacts/previews/capture-resized.png",
   fullPage: true,
 });
 await capture.setViewportSize({ width: 460, height: 560 });
-await capture.screenshot({ path: "artifacts/quick-save.png", fullPage: true });
+await capture.screenshot({
+  path: "artifacts/previews/quick-save.png",
+  fullPage: true,
+});
 console.log(
   "Capture layout",
   await capture.evaluate(() => ({
@@ -243,7 +255,10 @@ await page
 await page
   .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
   .waitFor();
-await page.screenshot({ path: "artifacts/project-parts.png", fullPage: true });
+await page.screenshot({
+  path: "artifacts/previews/project-parts.png",
+  fullPage: true,
+});
 // Exercise the MakerBazar public JSON fallback when a theme omits embedded product JSON.
 await context.route("https://makerbazar.in/products/test-board.js", (route) =>
   route.fulfill({
@@ -358,7 +373,7 @@ assert.ok(
 );
 assert.match(await cartWindow.locator("#cart-summary").innerText(), /8 units/);
 await cartWindow.screenshot({
-  path: "artifacts/cart-preview.png",
+  path: "artifacts/previews/cart-preview.png",
   fullPage: true,
 });
 await cartWindow.getByRole("button", { name: "Save entire cart" }).click();
@@ -416,7 +431,10 @@ assert.equal(
   "Projects",
 );
 assert.equal(await page.locator(".part-card").count(), 0);
-await page.screenshot({ path: "artifacts/projects-home.png", fullPage: true });
+await page.screenshot({
+  path: "artifacts/previews/projects-home.png",
+  fullPage: true,
+});
 // Restore a project into a fixture cart, then clear it with one click.
 await context.route("https://makerbazar.in/products/resistors.js", (route) =>
   route.fulfill({
@@ -495,7 +513,7 @@ const backup = await page.evaluate(
 );
 assert.equal(String(backup.items[0].id), "303");
 await restoreWindow.screenshot({
-  path: "artifacts/restore-project.png",
+  path: "artifacts/previews/restore-project.png",
   fullPage: true,
 });
 await restoreWindow.close();
@@ -533,7 +551,7 @@ const settingsBounds = await page
 assert.ok(Math.abs(side.y) < 1);
 assert.ok(exportBounds.y >= 0 && exportBounds.y + exportBounds.height <= 700);
 assert.ok(settingsBounds.y + settingsBounds.height <= 700);
-await page.screenshot({ path: "artifacts/sticky-sidebar.png" });
+await page.screenshot({ path: "artifacts/previews/sticky-sidebar.png" });
 await context.route("https://example.com/*", (route) =>
   route.fulfill({ contentType: "text/html", body: "<h1>Other store</h1>" }),
 );

@@ -32,6 +32,6 @@ jobs:
           path: |
             artifacts/*.zip
             artifacts/*.xpi
-            artifacts/*.png
+            artifacts/previews/*.png
           retention-days: 14
           if-no-files-found: error

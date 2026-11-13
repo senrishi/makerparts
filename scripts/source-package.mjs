@@ -1,3 +1,4 @@
+import { pruneOldPackages } from "./artifact-retention.mjs";
 import { mkdir, readFile, rm } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -20,3 +21,5 @@ execFileSync("zip", [
   "package-lock.json",
 ]);
 console.log(dest);
+
+await pruneOldPackages(version);

@@ -1,3 +1,4 @@
+import { pruneOldPackages } from "./artifact-retention.mjs";
 import { mkdir, rm, readFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -17,3 +18,5 @@ const mercury = path.resolve(`artifacts/makerparts-mercury-${version}.xpi`);
 await rm(mercury, { force: true });
 execFileSync("zip", ["-r", "-q", mercury, "."], { cwd: "dist/firefox" });
 console.log(mercury);
+
+await pruneOldPackages(version);
