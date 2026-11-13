@@ -41,7 +41,7 @@ No developer-operated server, telemetry or remote scripts. Store-cart changes ha
 - [Chrome storage](https://developer.chrome.com/docs/extensions/reference/api/storage)
 
 ## Project hub and loose parts
-The home page shows project names and Miscellaneous. Open a list to view its parts. The quick-add form defaults to **Create a new project**, with the new name field visible. Enter a name to create/use that project; leave it blank to save to **Miscellaneous**. Miscellaneous is also in the dropdown. Edit a part to move it to another list. Existing project assignments remain unchanged.
+The home page shows project names and Miscellaneous. Open a list to view its parts. Before any parts have been saved, the quick-add form defaults to **Create a new project**, with the new name field visible. Later saves remember the last added part’s project. Enter a name to create/use that project; leave it blank to save to **Miscellaneous**. Miscellaneous is also in the dropdown. Edit a part to move it to another list. Existing project assignments remain unchanged.
 
 The hub uses larger text and a matte black/gray default appearance. Your explicit theme preference is retained. The floating save window resizes with its window; the toolbar popup keeps a compact fixed size.
 
@@ -66,3 +66,5 @@ Open a project (or Miscellaneous) and click **Restore project**. Only **Planned*
 The extension saves the previous cart lines locally before replacing them. If the store cannot add the exact quantities, it attempts to restore the previous cart. Recovery can fail if items become unavailable or the network fails; the popout reports that explicitly and offers a previous-cart JSON backup. Keep the store tab and restore window open until the result appears. Shipping, discounts and availability remain controlled by the store.
 
 On MakerBazar's cart page, **Clear Cart** appears above **Save Cart**. Clear Cart immediately empties the store cart **without confirmation**, then refreshes the page. It does not remove parts from the extension library.
+
+New saves now remember the last added part's project, including Miscellaneous, across browser restarts. Saving a cart remembers that destination too. You can still choose Create a new project; leaving its name blank saves to Miscellaneous. Adding from an explicitly opened project keeps that project's selection. Editing an older part does not change the remembered destination. If the remembered project is deleted, the form falls back to Create a new project.

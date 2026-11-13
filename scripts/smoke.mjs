@@ -99,7 +99,15 @@ const settingsTab = await settingsTabPromise;
 await settingsTab.waitForLoadState();
 await settingsTab.getByLabel("Appearance").waitFor();
 await settingsTab.close();
-assert.equal(await page.locator("select[name=project]").inputValue(), "__new");
+const rememberedProject = await page
+  .locator("select[name=project] option")
+  .filter({ hasText: "Weather station" })
+  .getAttribute("value");
+assert.equal(
+  await page.locator("select[name=project]").inputValue(),
+  rememberedProject,
+);
+await page.locator("select[name=project]").selectOption("__new");
 await page.getByLabel("New project name").waitFor();
 assert.equal(
   await page.getByLabel("New project name").getAttribute("required"),
@@ -324,6 +332,11 @@ let cartWindowPromise = context.waitForEvent("page");
 await clickFloating(shop);
 let cartWindow = await cartWindowPromise;
 await cartWindow.waitForLoadState();
+assert.equal(
+  await cartWindow.locator("select[name=project]").inputValue(),
+  "__misc__",
+);
+await cartWindow.locator("select[name=project]").selectOption("__new");
 await cartWindow.getByLabel("New project name").fill("Cart build");
 await cartWindow.locator(".cart-line").first().waitFor();
 assert.equal(await cartWindow.locator(".cart-line").count(), 2);

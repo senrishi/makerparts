@@ -1,6 +1,7 @@
+import { defaultProject } from "../core/project-selection.js";
 import { MISC_ID } from "../core/model.js";
 import { el } from "./dom.js";
-export function projectPicker(form, state, selected = "__new") {
+export function projectPicker(form, state, selected) {
   const fields = form.elements;
   fields.project.replaceChildren();
   for (const project of [
@@ -12,7 +13,7 @@ export function projectPicker(form, state, selected = "__new") {
     option.value = project.id;
     fields.project.append(option);
   }
-  fields.project.value = selected || "__new";
+  fields.project.value = defaultProject(state, selected);
   const toggle = () => {
     form.querySelector("#new-project-field").hidden =
       fields.project.value !== "__new";

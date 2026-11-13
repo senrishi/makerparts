@@ -28,6 +28,12 @@ export function validateState(s) {
     !Array.isArray(s.parts)
   )
     throw Error("This is not a MakerParts backup.");
+  if (
+    s.lastProjectId !== undefined &&
+    s.lastProjectId !== null &&
+    typeof s.lastProjectId !== "string"
+  )
+    throw Error("Invalid remembered project in backup.");
   const ids = new Set();
   for (const p of s.projects) {
     if (
@@ -108,8 +114,10 @@ export function mutate(state, action) {
     }
     p.id ||= crypto.randomUUID();
     const i = s.parts.findIndex((x) => x.id === p.id);
-    if (i < 0) s.parts.push(p);
-    else s.parts[i] = p;
+    if (i < 0) {
+      s.parts.push(p);
+      s.lastProjectId = p.projectId;
+    } else s.parts[i] = p;
   } else if (action.type === "saveCart") {
     if (!Array.isArray(action.parts) || !action.parts.length)
       throw Error("Your cart is empty.");
@@ -139,6 +147,11 @@ export function mutate(state, action) {
     s.parts = s.parts.filter((p) => p.id !== action.id);
   else if (action.type === "deleteProject") {
     if (action.id === MISC_ID) throw Error("Miscellaneous cannot be deleted.");
+    const remembered =
+      s.lastProjectId === undefined
+        ? s.parts.at(-1)?.projectId
+        : s.lastProjectId;
+    if (remembered === action.id) s.lastProjectId = null;
     s.projects = s.projects.filter((p) => p.id !== action.id);
     s.parts = s.parts.filter((p) => p.projectId !== action.id);
   } else if (action.type === "import")

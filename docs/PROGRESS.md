@@ -159,3 +159,10 @@
 - Verified the localhost handoff was requested by Mercury, then read only MakerParts' persisted add-on registry entry: version 0.1.2, active=true, location=app-profile (permanent installation).
 - Started watch:mercury-updates for the current session; future local package outputs will be offered automatically while the process remains running. Browser approval may still be required on future updates.
 - Tag v0.1.2 successfully triggered the full automatic publication pipeline: https://github.com/senrishi/makerparts/actions/runs/43482437538 . Tests/build/lint/integration passed and Mozilla accepted the new version plus source archive. Review URL: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705436 . Publication/signing remain subject to Mozilla review.
+
+## Remember the last added part's project (0.1.3)
+- New part and Save Cart forms now default to the destination of the last successfully added part, including Miscellaneous or a newly created project.
+- An explicitly opened project or an existing part's project retains priority. Editing an old part does not change the last-added preference.
+- Preference is persisted inside the library and included in backups. Older libraries infer the destination from their final added part; deleted/stale destinations fall back to Create a new project.
+- Added unit coverage for persistence, cart saves, edits, deletion and old backups; updated Chromium checks to verify remembered selection across browser restart and in Save Cart.
+- Validation: 25 unit tests and full Chromium integration pass, including remembered selection after a full browser restart and in Save Cart. Existing edit/project context overrides the remembered default; manually choosing Create a new project still supports the blank-name Miscellaneous fallback.
