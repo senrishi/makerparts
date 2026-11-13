@@ -67,3 +67,5 @@
 - Split stylesheet into functional modules and formatted source for maintainability.
 - Removed the redundant generated Firefox legacy alias; original `dist/firefox/manifest.json` path remains the Mercury development entry point.
 - Packaging now recreates ZIPs so obsolete files are removed after source moves.
+- Validation after cleanup: 7 model tests pass; Chromium integration passes including a tiny initial viewport sizing regression, opening Settings through the gear, selected-variant capture, backups' data model, theme persistence and restart persistence. Visually checked compact popup after stylesheet split.
+- Modern Firefox release lint: zero errors/notices/warnings. Formatting check passes. Rebuilt ZIP contents contain only the new module paths. Mercury toolbar runtime confirmation still requires reloading the updated temporary extension in the user's browser.
