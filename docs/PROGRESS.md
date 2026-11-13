@@ -128,3 +128,10 @@
 - Created and pushed the private GitHub repository with full commit history.
 - First hosted Linux build passed: https://github.com/senrishi/makerparts/actions/runs/43475093463 . This includes all 12 model tests, strict Firefox validation, Chromium integration, browser packages and reviewer source artifact upload.
 - Both workflows are active; repository is confirmed private. Mozilla secrets are not configured, so public submission has not run. User setup steps and release commands are documented in docs/GITHUB_RELEASES.md.
+
+## First Mozilla submission
+- Configured the user-provided Mozilla credentials as GitHub Actions secrets; did not add them to repository files.
+- Run https://github.com/senrishi/makerparts/actions/runs/43476458088 passed build/testing and successfully created MakerParts 0.1.0 on AMO.
+- Authenticated Mozilla status: nominated/unreviewed, not signed, awaiting review. Listing: https://addons.mozilla.org/en-US/firefox/addon/makerparts/ ; version management: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705287 .
+- Stopped the original runner's post-submission approval wait; this does not withdraw the accepted submission. Listed releases now use approval-timeout=0 so successful submission completes without waiting for human review.
+- Verified latest official Mercury remains 129.0.2; browser-fork work is a separate future project.

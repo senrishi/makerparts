@@ -43,3 +43,6 @@ The reviewer source ZIP contains only source, scripts, tests, docs, release meta
 - https://extensionworkshop.com/documentation/develop/web-ext-command-reference/
 - https://extensionworkshop.com/documentation/manage/updating-your-extension/
 - https://mozilla.github.io/addons-server/topics/api/licenses.html
+
+## First submission status
+MakerParts 0.1.0 was accepted into Mozilla review. Manage it at https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705287 . The public URL is https://addons.mozilla.org/en-US/firefox/addon/makerparts/ and may not be available until publication. Do not submit 0.1.0 again. Listed release runs finish after successful submission rather than waiting for review/signing; check the Developer Hub for the later review outcome.

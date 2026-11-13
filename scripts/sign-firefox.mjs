@@ -57,6 +57,7 @@ await run([
   "artifacts/signed",
   "--channel",
   channel,
+  ...(channel === "listed" ? ["--approval-timeout", "0"] : []),
   "--upload-source-code",
   `artifacts/makerparts-source-${version}.zip`,
   "--no-config-discovery",
