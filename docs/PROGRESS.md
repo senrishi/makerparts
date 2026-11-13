@@ -69,3 +69,10 @@
 - Packaging now recreates ZIPs so obsolete files are removed after source moves.
 - Validation after cleanup: 7 model tests pass; Chromium integration passes including a tiny initial viewport sizing regression, opening Settings through the gear, selected-variant capture, backups' data model, theme persistence and restart persistence. Visually checked compact popup after stylesheet split.
 - Modern Firefox release lint: zero errors/notices/warnings. Formatting check passes. Rebuilt ZIP contents contain only the new module paths. Mercury toolbar runtime confirmation still requires reloading the updated temporary extension in the user's browser.
+
+## Hub simplification and Miscellaneous workflow
+- Home now lists project names and the built-in Miscellaneous list, with no parts/totals/part filters until a list is opened.
+- Enlarged hub navigation, part names, metadata, controls and category text; removed sidebar slogans and redundant header copy.
+- Replaced green styling with matte black/charcoal/neutral gray, including icons and the MakerBazar button. Dark is the initial theme; existing explicit appearance preferences remain respected.
+- Added a built-in Miscellaneous destination without requiring a project record. Existing projects and parts retain their assignments.
+- Updated per user clarification: default dropdown is Create a new project with the name field visible and optional. A blank/whitespace-only name saves to Miscellaneous; a filled name creates/uses a project. Miscellaneous is also explicitly selectable. Parts can be moved between lists through Edit.

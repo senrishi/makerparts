@@ -14,7 +14,7 @@ try {
   const mount = (data, initial) =>
     partForm(root, data, initial, (next) => {
       message.textContent = "✓ Saved to your project.";
-      mount(next, { projectId: next.parts.at(-1)?.projectId });
+      mount(next, {});
     });
   mount(state, {});
   try {

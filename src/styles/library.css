@@ -4,9 +4,9 @@
   min-height: 100vh;
 }
 aside {
-  border-right: 1px solid #dfe5d6;
+  border-right: 1px solid #dfdfdf;
   padding: 30px 22px;
-  background: #eef2e7;
+  background: #ededed;
   display: flex;
   flex-direction: column;
 }
@@ -24,7 +24,7 @@ nav button {
   overflow-wrap: anywhere;
 }
 nav button.selected {
-  background: #dce7cd;
+  background: #dedede;
   font-weight: 700;
 }
 .backup {
@@ -62,8 +62,8 @@ nav button.selected {
   margin: 25px 0;
 }
 .total {
-  background: #eaf0df;
-  border: 1px solid #dce5cb;
+  background: #eeeeee;
+  border: 1px solid #dcdcdc;
   border-radius: 12px;
   padding: 17px 23px;
   min-width: 190px;
@@ -98,14 +98,14 @@ nav button.selected {
   font-size: 11px;
   letter-spacing: 1.4px;
   margin: 27px 0 12px;
-  color: #718074;
+  color: #686868;
 }
 .part-card {
   display: flex;
   align-items: center;
   gap: 24px;
   background: white;
-  border: 1px solid #e0e6d9;
+  border: 1px solid #dfdfdf;
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 10px;
@@ -136,22 +136,22 @@ nav button.selected {
 }
 .part-price small {
   display: block;
-  color: #718074;
+  color: #686868;
 }
 .status {
   font-size: 11px;
   padding: 5px 10px;
   border-radius: 20px;
-  background: #f1eee3;
+  background: #eeeeee;
   text-transform: capitalize;
 }
 .received {
-  background: #e4efda;
-  color: #396338;
+  background: #e6e6e6;
+  color: #454545;
 }
 .ordered {
-  background: #e3edf5;
-  color: #365e80;
+  background: #ededed;
+  color: #505050;
 }
 .actions {
   display: flex;
@@ -163,7 +163,7 @@ nav button.selected {
 .empty {
   padding: 65px 20px;
   text-align: center;
-  border: 1px dashed #ccd7bf;
+  border: 1px dashed #d2d2d2;
   border-radius: 14px;
   margin-top: 30px;
 }
@@ -173,21 +173,21 @@ nav button.selected {
 }
 .empty-icon {
   font-size: 48px;
-  color: #71894c;
+  color: #7383a7;
 }
 dialog {
-  border: 1px solid #dce3d4;
+  border: 1px solid #dcdcdc;
   border-radius: 16px;
   width: 510px;
   max-width: calc(100vw - 30px);
   padding: 26px;
-  background: #fafbf7;
+  background: #fafafa;
   max-height: 92vh;
   overflow: auto;
-  box-shadow: 0 25px 100px #20382f30;
+  box-shadow: 0 25px 100px #24242430;
 }
 dialog::backdrop {
-  background: #20382f70;
+  background: #24242470;
 }
 .dialog-heading {
   display: flex;
@@ -247,5 +247,68 @@ dialog::backdrop {
 .model-detail {
   font-size: 13px;
   font-weight: 600;
-  color: #49674c;
+  color: #606060;
+}
+/* Larger hub typography; popup dimensions remain compact. */
+.app {
+  font-size: 17px;
+  grid-template-columns: 270px 1fr;
+}
+.app .brand {
+  font-size: 26px;
+}
+.app .library h1 {
+  font-size: 36px;
+}
+.app .muted,
+.app .notes,
+.app .model-detail,
+.app .part-price small {
+  font-size: 15px;
+}
+.app .part-name {
+  font-size: 20px;
+}
+.app .category-heading {
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  text-transform: none;
+}
+.app .status,
+.app .actions button,
+.app .toolbar button,
+.app .backup button,
+.app .file-button {
+  font-size: 15px;
+}
+.app #message:empty,
+.app #summary:empty {
+  display: none;
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+.project-tile {
+  text-align: left;
+  padding: 24px;
+  font-size: 21px;
+  font-weight: 650;
+  min-height: 100px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 220px 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .app {
+    display: block;
+  }
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
 }

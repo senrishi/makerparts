@@ -1,6 +1,6 @@
 const api = globalThis.browser || chrome;
 const system = matchMedia("(prefers-color-scheme: dark)");
-let preference = "system";
+let preference = "dark";
 function apply() {
   document.documentElement.dataset.theme =
     preference === "system" ? (system.matches ? "dark" : "light") : preference;
@@ -8,13 +8,13 @@ function apply() {
     select.value = preference;
 }
 api.storage.local.get("theme").then((data) => {
-  preference = data.theme || "system";
+  preference = data.theme || "dark";
   apply();
 });
 system.addEventListener("change", apply);
 api.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && changes.theme) {
-    preference = changes.theme.newValue || "system";
+    preference = changes.theme.newValue || "dark";
     apply();
   }
 });

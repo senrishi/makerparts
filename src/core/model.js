@@ -12,6 +12,7 @@ export const CATEGORIES = [
   "Capacitors",
   "Other",
 ];
+export const MISC_ID = "__misc__";
 export const emptyState = () => ({ version: 1, projects: [], parts: [] });
 export function validUrl(value) {
   const url = new URL(value);
@@ -32,6 +33,7 @@ export function validateState(s) {
     if (
       typeof p.id !== "string" ||
       !p.id ||
+      p.id === MISC_ID ||
       ids.has(p.id) ||
       typeof p.name !== "string" ||
       !p.name.trim()
@@ -45,7 +47,7 @@ export function validateState(s) {
       typeof p.id !== "string" ||
       !p.id ||
       partIds.has(p.id) ||
-      !ids.has(p.projectId) ||
+      (p.projectId !== MISC_ID && !ids.has(p.projectId)) ||
       typeof p.name !== "string" ||
       !p.name.trim() ||
       !CATEGORIES.includes(p.category) ||
@@ -70,6 +72,7 @@ export function validateState(s) {
 export function mutate(state, action) {
   const s = structuredClone(state);
   if (action.type === "project") {
+    if (action.id === MISC_ID) throw Error("Miscellaneous is a built-in list.");
     const name = String(action.name || "").trim();
     if (!name) throw Error("Give your project a name.");
     if (
@@ -85,10 +88,14 @@ export function mutate(state, action) {
   } else if (action.type === "save") {
     const p = {
       ...action.part,
+      projectId:
+        !action.part.projectId || action.part.projectId === "__new"
+          ? MISC_ID
+          : action.part.projectId,
       name: String(action.part.name || "").trim(),
       url: validUrl(action.part.url),
     };
-    if (action.newProject) {
+    if (action.newProject?.trim()) {
       const name = action.newProject.trim();
       let project = s.projects.find(
         (x) => x.name.toLowerCase() === name.toLowerCase(),
@@ -106,6 +113,7 @@ export function mutate(state, action) {
   } else if (action.type === "deletePart")
     s.parts = s.parts.filter((p) => p.id !== action.id);
   else if (action.type === "deleteProject") {
+    if (action.id === MISC_ID) throw Error("Miscellaneous cannot be deleted.");
     s.projects = s.projects.filter((p) => p.id !== action.id);
     s.parts = s.parts.filter((p) => p.projectId !== action.id);
   } else if (action.type === "import")

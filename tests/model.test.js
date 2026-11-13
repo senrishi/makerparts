@@ -98,3 +98,34 @@ test("capacitors have a dedicated suggestion", async () => {
   const { suggestCategory } = await import("../src/core/model.js");
   assert.equal(suggestCategory("100uF electrolytic capacitor"), "Capacitors");
 });
+test("loose parts default to Miscellaneous and can move into projects", async () => {
+  const { MISC_ID } = await import("../src/core/model.js");
+  let s = mutate(emptyState(), { type: "save", part });
+  assert.equal(s.projects.length, 0);
+  assert.equal(s.parts[0].projectId, MISC_ID);
+  assert.deepEqual(validateState(JSON.parse(JSON.stringify(s))), s);
+  s = mutate(s, { type: "project", id: "build", name: "Build" });
+  s = mutate(s, { type: "save", part: { ...s.parts[0], projectId: "build" } });
+  assert.equal(s.parts.length, 1);
+  assert.equal(s.parts[0].projectId, "build");
+  assert.throws(() => mutate(s, { type: "deleteProject", id: MISC_ID }));
+});
+test("new-project default with a blank name falls back to Miscellaneous", async () => {
+  const { MISC_ID } = await import("../src/core/model.js");
+  for (const name of ["", "   "]) {
+    const s = mutate(emptyState(), {
+      type: "save",
+      newProject: name,
+      part: { ...part, projectId: "__new" },
+    });
+    assert.equal(s.projects.length, 0);
+    assert.equal(s.parts[0].projectId, MISC_ID);
+  }
+  const s = mutate(emptyState(), {
+    type: "save",
+    newProject: "  Radio build  ",
+    part: { ...part, projectId: "__new" },
+  });
+  assert.equal(s.projects[0].name, "Radio build");
+  assert.equal(s.parts[0].projectId, s.projects[0].id);
+});

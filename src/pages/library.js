@@ -1,11 +1,12 @@
-import { CATEGORIES, totals } from "../core/model.js";
+import { renderProjectList } from "../components/project-list.js";
+import { CATEGORIES, totals, MISC_ID } from "../core/model.js";
 import { api, request } from "../core/api.js";
 import { renderPartList } from "../components/part-list.js";
 import { partForm } from "../components/part-form.js";
 import { el } from "../components/dom.js";
 import { money } from "../core/format.js";
 let state,
-  selected = "";
+  selected = location.hash.slice(1);
 const $ = (s) => document.querySelector(s);
 const message = (text) => ($("#message").textContent = text);
 CATEGORIES.forEach((c) => {
@@ -23,29 +24,45 @@ function edit(part = {}) {
   $("#editor-title").textContent = part.id ? "Edit part" : "Add a part";
   $("#editor").showModal();
 }
+function selectList(id) {
+  selected = id;
+  $("#search").value = "";
+  $("#category-filter").value = "";
+  $("#status-filter").value = "";
+  history.replaceState(null, "", id ? `#${id}` : location.pathname);
+  render();
+}
 function render() {
-  if (selected && !state.projects.some((p) => p.id === selected)) selected = "";
+  if (
+    selected &&
+    selected !== MISC_ID &&
+    !state.projects.some((p) => p.id === selected)
+  )
+    selected = "";
   $("#projects").replaceChildren();
-  const nav = (id, name, count) => {
-    const b = el(
-      "button",
-      `${name} · ${count}`,
-      selected === id ? "selected" : "",
-    );
+  const nav = (id, name) => {
+    const b = el("button", name, selected === id ? "selected" : "");
     b.onclick = () => {
-      selected = id;
-      render();
+      selectList(id);
     };
     $("#projects").append(b);
   };
-  nav("", "All projects", state.parts.length);
-  state.projects.forEach((p) =>
-    nav(p.id, p.name, state.parts.filter((x) => x.projectId === p.id).length),
-  );
+  nav("", "Projects");
+  nav(MISC_ID, "Miscellaneous");
+  state.projects.forEach((p) => nav(p.id, p.name));
   const project = state.projects.find((p) => p.id === selected);
-  $("#heading").textContent = project?.name || "All projects";
+  $("#heading").textContent =
+    project?.name || (selected === MISC_ID ? "Miscellaneous" : "Projects");
+  const home = !selected;
+  $("#totals").hidden = home;
+  $("#part-toolbar").hidden = home;
+  if (home) {
+    $("#summary").textContent = "";
+    renderProjectList($("#parts"), state.projects, selectList);
+    return;
+  }
   $("#rename-project").hidden = $("#delete-project").hidden = !project;
-  const all = state.parts.filter((p) => !selected || p.projectId === selected);
+  const all = state.parts.filter((p) => p.projectId === selected);
   $("#summary").textContent =
     `${all.length} part${all.length === 1 ? "" : "s"} · ${all.filter((p) => p.status === "received").length} received${selected ? "" : ` · ${state.projects.length} projects`}`;
   $("#totals").replaceChildren();
@@ -123,9 +140,8 @@ $("#project-form").onsubmit = async (e) => {
       id,
       name: $("#project-name").value,
     });
-    selected = id;
     $("#project-dialog").close();
-    render();
+    selectList(id);
   } catch (e) {
     $("#project-error").textContent = e.message;
   }

@@ -54,6 +54,15 @@ await context.close();
 context = await launch();
 page = await context.newPage();
 await page.goto(`chrome-extension://${id}/pages/library.html`);
+await page
+  .locator(".project-tile")
+  .filter({ hasText: "Weather station" })
+  .waitFor();
+assert.equal(await page.locator(".part-card").count(), 0);
+await page
+  .locator(".project-tile")
+  .filter({ hasText: "Weather station" })
+  .click();
 await page.getByRole("link", { name: "ESP32 board" }).waitFor();
 assert.equal(
   (await page.locator(".status").innerText()).toLowerCase(),
@@ -81,6 +90,12 @@ const settingsTab = await settingsTabPromise;
 await settingsTab.waitForLoadState();
 await settingsTab.getByLabel("Appearance").waitFor();
 await settingsTab.close();
+assert.equal(await page.locator("select[name=project]").inputValue(), "__new");
+await page.getByLabel("New project name").waitFor();
+assert.equal(
+  await page.getByLabel("New project name").getAttribute("required"),
+  null,
+);
 await page.getByLabel("Part name").fill("10k resistor");
 await page.getByLabel("Product link").fill("https://example.com/resistor");
 await page.locator("select[name=category]").selectOption("Resistors");
@@ -97,6 +112,22 @@ await page.waitForFunction(
 await page.goto(`chrome-extension://${id}/pages/library.html`);
 await page.waitForFunction(
   () => document.documentElement.dataset.theme === "dark",
+);
+await page
+  .locator(".project-tile")
+  .filter({ hasText: "Weather station" })
+  .waitFor();
+assert.equal(await page.locator(".part-card").count(), 0);
+await page.setViewportSize({ width: 1280, height: 800 });
+await page.screenshot({ path: "artifacts/projects-home.png", fullPage: true });
+await page
+  .locator(".project-tile")
+  .filter({ hasText: "Miscellaneous" })
+  .click();
+await page.getByRole("link", { name: "10k resistor", exact: true }).waitFor();
+assert.equal(
+  await page.getByRole("link", { name: "ESP32 board", exact: true }).count(),
+  0,
 );
 await page.screenshot({ path: "artifacts/library-dark.png", fullPage: true });
 const shop = await context.newPage();
@@ -146,6 +177,27 @@ await page.reload();
 await page
   .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
   .waitFor();
+// Move a loose part into a project without duplicating it.
+const variantCard = page.locator(".part-card").filter({ hasText: "S3-22" });
+await variantCard.getByRole("button", { name: "Edit", exact: true }).click();
+await page
+  .locator("select[name=project]")
+  .selectOption({ label: "Weather station" });
+await page.getByRole("button", { name: "Save changes" }).click();
+assert.equal(
+  await page
+    .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
+    .count(),
+  0,
+);
+await page
+  .locator("nav")
+  .getByRole("button", { name: "Weather station", exact: true })
+  .click();
+await page
+  .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
+  .waitFor();
+await page.screenshot({ path: "artifacts/project-parts.png", fullPage: true });
 // Exercise the MakerBazar public JSON fallback when a theme omits embedded product JSON.
 await context.route("https://makerbazar.in/products/test-board.js", (route) =>
   route.fulfill({

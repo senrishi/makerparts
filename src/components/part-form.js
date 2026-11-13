@@ -1,15 +1,18 @@
-import { CATEGORIES } from "../core/model.js";
+import { CATEGORIES, MISC_ID } from "../core/model.js";
 import { request } from "../core/api.js";
 import { el } from "./dom.js";
 export function partForm(root, state, part = {}, onSave) {
   root.replaceChildren();
   const form = el("form");
   form.className = "part-form";
-  form.innerHTML = `<div class="form-fields"><label>Part name<input name="name" required maxlength="250" placeholder="e.g. ESP32 development board"></label><label>Model / selected variant<input name="model" maxlength="250" placeholder="e.g. ESP32-S3 · N16R8 · Type-C"></label><div class="pair"><label>Project<select name="project" required></select></label><label>Category<select name="category"></select></label></div><label id="new-project-field">New project name<input name="newProject" maxlength="100" placeholder="e.g. Garden monitor"></label><div class="price-row"><label>Unit price<input name="price" type="number" min="0" step="any" placeholder="Unknown"></label><label>Currency<input name="currency" required pattern="[A-Za-z]{3}" maxlength="3" list="currencies"></label><label>Quantity<input name="quantity" type="number" min="1" max="999999" step="1" required></label></div><datalist id="currencies"><option value="INR"><option value="USD"><option value="EUR"><option value="GBP"><option value="CAD"><option value="AUD"></datalist><details class="extra-details"><summary>Link, SKU, notes & status <span class="detail-summary"></span></summary><label>Product link<input name="url" type="url" required placeholder="https://store.com/product"></label><div class="pair"><label>SKU / part number<input name="sku" maxlength="250" placeholder="Optional"></label><label>Status<select name="status"><option value="planned">Planned</option><option value="ordered">Ordered</option><option value="received">Received</option></select></label></div><label>Notes <span class="muted">(optional)</span><textarea name="notes" rows="2" maxlength="5000" placeholder="Specs, variant, pin count…"></textarea></label></details></div><div class="form-actions"><p class="form-error" role="alert"></p><button class="primary save" type="submit">Save part</button></div>`;
+  form.innerHTML = `<div class="form-fields"><label>Part name<input name="name" required maxlength="250" placeholder="e.g. ESP32 development board"></label><label>Model / selected variant<input name="model" maxlength="250" placeholder="e.g. ESP32-S3 · N16R8 · Type-C"></label><div class="pair"><label>Project<select name="project" required></select></label><label>Category<select name="category"></select></label></div><label id="new-project-field">New project name<input name="newProject" maxlength="100" placeholder="Leave blank for Miscellaneous"></label><div class="price-row"><label>Unit price<input name="price" type="number" min="0" step="any" placeholder="Unknown"></label><label>Currency<input name="currency" required pattern="[A-Za-z]{3}" maxlength="3" list="currencies"></label><label>Quantity<input name="quantity" type="number" min="1" max="999999" step="1" required></label></div><datalist id="currencies"><option value="INR"><option value="USD"><option value="EUR"><option value="GBP"><option value="CAD"><option value="AUD"></datalist><details class="extra-details"><summary>Link, SKU, notes & status <span class="detail-summary"></span></summary><label>Product link<input name="url" type="url" required placeholder="https://store.com/product"></label><div class="pair"><label>SKU / part number<input name="sku" maxlength="250" placeholder="Optional"></label><label>Status<select name="status"><option value="planned">Planned</option><option value="ordered">Ordered</option><option value="received">Received</option></select></label></div><label>Notes <span class="muted">(optional)</span><textarea name="notes" rows="2" maxlength="5000" placeholder="Specs, variant, pin count…"></textarea></label></details></div><div class="form-actions"><p class="form-error" role="alert"></p><button class="primary save" type="submit">Save part</button></div>`;
   form.querySelector(".save").textContent = part.id
     ? "Save changes"
     : "Save part";
   const fields = form.elements;
+  const miscellaneous = el("option", "Miscellaneous");
+  miscellaneous.value = MISC_ID;
+  fields.project.append(miscellaneous);
   for (const p of state.projects) {
     const opt = el("option", p.name);
     opt.value = p.id;
@@ -25,7 +28,7 @@ export function partForm(root, state, part = {}, onSave) {
   });
   for (const key of ["name", "url", "notes", "model", "sku"])
     fields[key].value = part[key] || "";
-  fields.project.value = part.projectId || state.projects[0]?.id || "__new";
+  fields.project.value = part.projectId || "__new";
   fields.category.value = part.category || "Other";
   fields.price.value = part.price ?? "";
   fields.currency.value = /^[A-Z]{3}$/.test(part.currency)
@@ -48,7 +51,7 @@ export function partForm(root, state, part = {}, onSave) {
   const toggle = () => {
     const show = fields.project.value === "__new";
     form.querySelector("#new-project-field").hidden = !show;
-    fields.newProject.required = show;
+    fields.newProject.required = false;
   };
   fields.project.onchange = toggle;
   toggle();
@@ -63,7 +66,7 @@ export function partForm(root, state, part = {}, onSave) {
         type: "save",
         newProject:
           fields.project.value === "__new"
-            ? fields.newProject.value
+            ? fields.newProject.value.trim()
             : undefined,
         part: {
           id: part.id,

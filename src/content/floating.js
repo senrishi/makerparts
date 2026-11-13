@@ -12,7 +12,7 @@
   const shadow = host.attachShadow({ mode: "closed" });
   const style = document.createElement("style");
   style.textContent =
-    "button{font:600 14px system-ui;cursor:pointer;color:#fff;background:#24523e;border:1px solid #b6cf9b;border-radius:28px;padding:14px 20px;box-shadow:0 4px 20px #0004}button:hover{background:#183e2d}button:focus-visible{outline:3px solid #b6cf9b;outline-offset:3px}";
+    "button{font:600 14px system-ui;cursor:pointer;color:#fff;background:#303030;border:1px solid #aaaaaa;border-radius:28px;padding:14px 20px;box-shadow:0 4px 20px #0004}button:hover{background:#181818}button:focus-visible{outline:3px solid #aaaaaa;outline-offset:3px}";
   const button = document.createElement("button");
   button.textContent = "＋ Save to MakerParts";
   button.title = "Save this page and selected variant to a project";

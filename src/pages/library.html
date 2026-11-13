@@ -11,11 +11,10 @@
     <div class="app">
       <aside>
         <a class="brand" href="library.html">▧ MakerParts</a>
-        <p class="eyebrow">A HOME FOR YOUR NEXT IDEA</p>
+
         <button id="new-project" class="primary">＋ New project</button>
         <nav id="projects" aria-label="Projects"></nav>
         <div class="backup">
-          <p class="eyebrow">YOUR WORKBENCH, BACKED UP</p>
           <button id="export">Export backup</button
           ><label class="file-button"
             >Import backup<input
@@ -23,22 +22,18 @@
               type="file"
               accept="application/json,.json"
           /></label>
-          <p class="muted">
-            Local to this browser. Export to move your library or keep a backup.
-          </p>
         </div>
       </aside>
       <main class="library">
         <header class="library-header">
           <div>
-            <p class="eyebrow">PROJECT LIBRARY</p>
-            <h1 id="heading">All projects</h1>
+            <h1 id="heading">Projects</h1>
             <p id="summary" class="muted"></p>
           </div>
           <button id="add-part" class="primary">＋ Add a part</button>
         </header>
         <div id="totals" class="totals"></div>
-        <div class="toolbar">
+        <div class="toolbar" id="part-toolbar">
           <input
             id="search"
             type="search"

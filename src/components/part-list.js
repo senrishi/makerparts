@@ -1,4 +1,4 @@
-import { CATEGORIES } from "../core/model.js";
+import { CATEGORIES, MISC_ID } from "../core/model.js";
 import { el } from "./dom.js";
 import { money } from "../core/format.js";
 export function renderPartList({
@@ -14,15 +14,8 @@ export function renderPartList({
   if (!parts.length) {
     const empty = el("div", undefined, "empty");
     empty.append(
-      el("span", "▧", "empty-icon"),
-      el("h2", hasParts ? "No matching parts" : "Make room for your next idea"),
-      el(
-        "p",
-        hasParts
-          ? "Try another search or filter."
-          : "Save parts from any store. Keep each build together, from the first resistor to the last board.",
-        "muted",
-      ),
+      el("h2", hasParts ? "No matching parts" : "No parts yet"),
+      el("p", hasParts ? "Try another search or filter." : "", "muted"),
     );
     const b = el("button", "＋ Add your first part", "primary");
     b.onclick = () => onAdd();
@@ -45,7 +38,7 @@ export function renderPartList({
         link,
         el(
           "p",
-          `${new URL(p.url).hostname} · ${projects.find((x) => x.id === p.projectId)?.name}`,
+          `${new URL(p.url).hostname} · ${p.projectId === MISC_ID ? "Miscellaneous" : projects.find((x) => x.id === p.projectId)?.name}`,
           "muted",
         ),
       );

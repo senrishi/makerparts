@@ -5,7 +5,7 @@
   min-height: 560px;
   display: flex;
   flex-direction: column;
-  background: #fafbf7;
+  background: #fafafa;
 }
 .popup header {
   display: flex;
@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 12px 18px;
-  border-bottom: 1px solid #e1e6d9;
+  border-bottom: 1px solid #e1e1e1;
   flex-shrink: 0;
 }
 .popup header .brand {
@@ -58,10 +58,10 @@
   display: flex;
   justify-content: space-between;
   padding: 9px 21px;
-  border-top: 1px solid #e1e6d9;
+  border-top: 1px solid #e1e1e1;
   font-size: 11px;
   flex-shrink: 0;
 }
 .popup footer span {
-  color: #718074;
+  color: #686868;
 }
