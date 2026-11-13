@@ -65,3 +65,37 @@
 .popup footer span {
   color: #686868;
 }
+/* Separate windows have a definite viewport and can safely fill it. */
+html.capture-window {
+  height: 100%;
+  overflow: hidden;
+}
+.capture-window .popup {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.capture-window .popup > header,
+.capture-window .popup > main,
+.capture-window .popup > footer {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+}
+@media (max-width: 380px) {
+  .capture-window .pair {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .capture-window .popup > header {
+    padding-inline: 12px;
+  }
+  .capture-window .popup > main {
+    padding-inline: 12px;
+  }
+  .capture-window .popup > footer {
+    padding-inline: 15px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}

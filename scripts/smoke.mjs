@@ -148,6 +148,34 @@ await capture.waitForFunction(() =>
   document.querySelector("[name=model]")?.value.includes("ESP32-S3"),
 );
 await capture.setViewportSize({ width: 460, height: 560 });
+// Standalone capture windows should resize; toolbar sizing stays intrinsic.
+for (const viewport of [
+  { width: 1000, height: 650 },
+  { width: 340, height: 440 },
+]) {
+  await capture.setViewportSize(viewport);
+  assert.equal(
+    await capture
+      .locator("body")
+      .evaluate((body) => body.getBoundingClientRect().width),
+    viewport.width,
+  );
+  const bounds = await capture.locator(".save").boundingBox();
+  assert.ok(bounds.y + bounds.height <= viewport.height);
+  assert.ok(bounds.x + bounds.width <= viewport.width);
+  assert.equal(
+    await capture.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+    true,
+  );
+}
+await capture.setViewportSize({ width: 1000, height: 650 });
+await capture.screenshot({
+  path: "artifacts/capture-resized.png",
+  fullPage: true,
+});
+await capture.setViewportSize({ width: 460, height: 560 });
 await capture.screenshot({ path: "artifacts/quick-save.png", fullPage: true });
 console.log(
   "Capture layout",

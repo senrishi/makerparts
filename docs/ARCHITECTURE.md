@@ -19,6 +19,6 @@
 `artifacts/` holds generated ZIPs and UI screenshots; it is ignored by Git. Packaging recreates ZIPs so moved or deleted files cannot linger in them. `scripts/` holds build, package and browser integration tooling; `tests/` holds data-model tests; `docs/` holds project and installation information.
 
 ## Popup sizing and initialization
-The toolbar popup uses explicit 460 × 560 pixel intrinsic dimensions. Avoid `max-height: 100vh` and `max-width: 100vw` on the popup body: during browser popup auto-sizing, viewport-dependent constraints can create a circular measurement and collapse the popup. Fields scroll inside the form while the Save action stays in place.
+The toolbar popup uses explicit 460 × 560 pixel intrinsic dimensions. Avoid `max-height: 100vh` and `max-width: 100vw` on the popup body: during browser popup auto-sizing, viewport-dependent constraints can create a circular measurement and collapse the popup. Fields scroll inside the form while the Save action stays in place. Standalone capture URLs have a `capture-window` class with viewport-filling sizing and a centered content width; this mode is intentionally separate from toolbar auto-sizing.
 
 The form mounts as soon as storage is read. Product capture then fills it asynchronously, unless the user has started editing. Loading and failure messages are visible independently of capture. Extension storage keys and the Firefox extension ID remain unchanged during the reorganization.

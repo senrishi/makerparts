@@ -76,3 +76,9 @@
 - Replaced green styling with matte black/charcoal/neutral gray, including icons and the MakerBazar button. Dark is the initial theme; existing explicit appearance preferences remain respected.
 - Added a built-in Miscellaneous destination without requiring a project record. Existing projects and parts retain their assignments.
 - Updated per user clarification: default dropdown is Create a new project with the name field visible and optional. A blank/whitespace-only name saves to Miscellaneous; a filled name creates/uses a project. Miscellaneous is also explicitly selectable. Parts can be moved between lists through Edit.
+
+## Responsive capture window
+- User screenshot revealed the floating capture window retained toolbar-sized content when enlarged.
+- Added an early standalone-window class only for source-tab capture URLs. Standalone capture fills its window and centers content up to 760px; toolbar popup keeps explicit intrinsic dimensions.
+- Narrow standalone windows stack project/category fields and scroll only the form fields while Save remains in view.
+- Validated 9 model tests, project-only home, Miscellaneous default fallback, moving a part into a project, and responsive capture at 1000×650 and 340×440 with Save visible. Release Firefox lint and format checks pass. Corrected hub auto margins so short project lists start at the top.

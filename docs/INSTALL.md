@@ -39,3 +39,8 @@ No server, telemetry, remote scripts or automatic shopping actions. MakerBazar a
 - [Firefox temporary installation](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)
 - [Mozilla signing](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/)
 - [Chrome storage](https://developer.chrome.com/docs/extensions/reference/api/storage)
+
+## Project hub and loose parts
+The home page shows project names and Miscellaneous. Open a list to view its parts. The quick-add form defaults to **Create a new project**, with the new name field visible. Enter a name to create/use that project; leave it blank to save to **Miscellaneous**. Miscellaneous is also in the dropdown. Edit a part to move it to another list. Existing project assignments remain unchanged.
+
+The hub uses larger text and a matte black/gray default appearance. Your explicit theme preference is retained. The floating save window resizes with its window; the toolbar popup keeps a compact fixed size.
