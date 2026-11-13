@@ -150,3 +150,9 @@
 - Added restore, stock-failure, rollback, cart-change and direct-clear unit coverage. Chromium integration verified Planned-only restore, exact quantities, persisted previous-cart backup, no-confirmation clear and sticky controls with a long page/navigation.
 - Existing Mozilla 0.1.0 review submission is unchanged; future release metadata now describes the explicit store-cart write features accurately.
 - Final validation: 21 unit tests and full Chromium integration pass. Visually checked the pinned sidebar and restore success view. Strict Firefox release lint is clean. Store mutation tests use controlled fixtures; no live user cart was changed during development. Live MakerBazar theme/session behavior still requires a user check after reloading.
+
+## Local Mercury install handoff and automatic release attempt (0.1.2)
+- Added one-shot install:mercury and package-watching watch:mercury-updates commands. Local packages are checked for the current version and Mercury compatibility manifest.
+- Direct macOS file-open did not show a verifiable installer, so the helper uses a short-lived localhost URL with Firefox's XPI installer MIME type. Only the selected package is exposed under a random path; no browser profile files or signature settings are changed.
+- Browser approval can still be required. This removes manual file picking, not the browser's security approval. Added a loopback handoff test.
+- Bumped to 0.1.2 for the requested automatic tagged Mozilla release submission.

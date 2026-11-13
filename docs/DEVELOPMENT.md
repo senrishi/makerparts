@@ -56,3 +56,21 @@ For a private release to update automatically after the initial installation, ch
 - [web-ext command reference](https://extensionworkshop.com/documentation/develop/web-ext-command-reference/)
 - [Signing and distribution](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/)
 - [Updating your extension](https://extensionworkshop.com/documentation/manage/updating-your-extension/)
+
+## Install local Mercury packages without the file picker
+
+```sh
+npm run install:mercury
+```
+
+This builds/packages the current compatibility XPI, validates its manifest, and opens a temporary localhost download in your existing Mercury app. The loopback server exposes only that package under a random URL and stops after handoff. Mercury can still require its normal install/update approval, or reject unsigned software if signature enforcement is enabled; the helper does not bypass those controls. It preserves your browser profile and does not remove the existing add-on.
+
+To have newly packaged XPIs handed to Mercury automatically:
+
+```sh
+npm run watch:mercury-updates
+```
+
+Keep this terminal running. Whenever this project creates an updated Mercury XPI via `npm run package`, the watcher opens its install link. It deduplicates already-served package hashes and does not claim installation is complete merely because the download was served. Use the one-shot command again if you dismissed a prompt. This operates on local build outputs, not GitHub downloads, and does not run as a login service.
+
+Use `node scripts/install-mercury.mjs --check --no-build` to validate the current package without opening a browser. Set `MERCURY_APP` if Mercury is installed somewhere other than `/Applications/Mercury.app`.
