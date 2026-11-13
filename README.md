@@ -18,3 +18,5 @@ See [project details](docs/PROJECT.md) and [progress](docs/PROGRESS.md).
 No runtime dependencies or server. Developer tooling is locked in `package-lock.json`. The Firefox ZIP must be Mozilla-signed before permanent installation in standard Firefox.
 
 Source modules and build output are described in [architecture](docs/ARCHITECTURE.md). Run `npm run format` to format source or `npm run format:check` to verify formatting. Generated browser builds and artifacts are excluded from Git.
+
+For automatic Mercury development reloads, run `npm run dev:mercury`. For Mozilla signing, versioning, and distribution choices, see [development and releases](docs/DEVELOPMENT.md). Signing runs only when explicitly invoked with credentials; no upload is performed by the development command.

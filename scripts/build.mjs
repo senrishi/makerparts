@@ -14,10 +14,11 @@ const styleRevision = createHash("sha256")
   .update(stylesheet)
   .digest("hex")
   .slice(0, 12);
+const { version } = JSON.parse(await readFile("package.json", "utf8"));
 const base = {
   manifest_version: 3,
   name: "MakerParts",
-  version: "0.1.0",
+  version,
   description:
     "Save electronics parts into projects, with prices, categories and shopping progress.",
   permissions: ["storage", "activeTab", "scripting"],

@@ -111,3 +111,10 @@
 - Prepared an unsigned Mercury-compatible XPI from `dist/firefox`, separate from the Firefox 140+ signing package.
 - Documented normal Add-ons Manager installation and the signature preference used by builds permitting unsigned extensions, with a library export/import step before replacing a temporary install.
 - Reviewed Mercury source signing configuration; macOS binary enforcement and restart persistence for a permanent install remain to be verified by the user.
+
+## Development reload and signing automation
+- Added `dev:mercury`: dedicated persistent development profile, source watcher, serialized/debounced rebuilds, and web-ext reload after build completion.
+- Added `sign:firefox`: explicit unlisted/listed submission command, ignored environment credentials, release lint before upload, and signed output artifacts. No upload performed.
+- Build versions and package names now follow package.json so release version bumps propagate consistently.
+- Documented private/public distribution, local temporary-install lifecycle, Firefox 140+ signing vs Mercury 129 compatibility, and the need for HTTPS update hosting for unlisted auto-updates.
+- Validation: 12 model tests pass; development configuration check finds the Mercury executable and prepares the dedicated profile/reload signal; signing check confirms configuration without uploading. Verified secrets and development data are Git-ignored. Live Mercury watcher/reload and Mozilla signing remain unexecuted; credentials are not configured.
