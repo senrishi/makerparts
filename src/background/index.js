@@ -1,9 +1,37 @@
+import { makerCartOperation } from "../capture/restore.js";
+import { isMakerCart } from "../core/sites.js";
 import { BUILD_ID } from "../core/build-info.js";
 import { RELOAD_MESSAGE } from "../core/messaging.js";
 import { api } from "../core/api.js";
 import { libraryAction } from "../core/library-store.js";
 api.runtime.onMessage.addListener((message, sender, respond) => {
   if (sender.id !== api.runtime.id || message?.channel !== "makerparts") return;
+  if (message.action?.type === "clearStoreCart") {
+    if (!sender.tab || !isMakerCart(sender.tab.url)) {
+      respond({
+        ok: false,
+        error: "Clear Cart is only available on MakerBazar cart pages.",
+      });
+      return;
+    }
+    api.scripting
+      .executeScript({
+        target: { tabId: sender.tab.id },
+        func: makerCartOperation,
+        args: ["clear"],
+      })
+      .then(
+        (results) =>
+          respond(
+            results[0]?.result || {
+              ok: false,
+              error: "Could not clear the cart.",
+            },
+          ),
+        (error) => respond({ ok: false, error: error.message }),
+      );
+    return true;
+  }
   if (["openCapture", "openCartCapture"].includes(message.action?.type)) {
     if (
       !sender.tab ||

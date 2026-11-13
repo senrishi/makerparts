@@ -33,7 +33,7 @@ For development only: open `about:debugging#/runtime/this-firefox`, click **Load
 - **Resistors** and **Capacitors** have separate categories. Existing Passive components records keep their category; edit them to recategorize.
 
 ## Privacy and storage
-No server, telemetry, remote scripts or automatic shopping actions. MakerBazar alone has persistent site access for the floating save button and selected-variant capture; other sites use temporary access granted by your toolbar click. Parts are stored in `storage.local` in the current browser profile. Closing the browser preserves them; uninstalling the extension or deleting the profile can remove them.
+No developer-operated server, telemetry or remote scripts. Store-cart changes happen only through the user-triggered Restore Project and Clear Cart controls; no checkout or purchase is submitted. MakerBazar alone has persistent site access for the floating save button and selected-variant capture; other sites use temporary access granted by your toolbar click. Parts are stored in `storage.local` in the current browser profile. Closing the browser preserves them; uninstalling the extension or deleting the profile can remove them.
 
 ## References
 - [Firefox temporary installation](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)
@@ -58,3 +58,11 @@ After a successful individual or cart save, the popout shows **Saved successfull
 Export your library before replacing the temporary installation. In Mercury, try setting `xpinstall.signatures.required` to `false` in `about:config`, then remove the temporary add-on and install the XPI through `about:addons` → gear menu → Install Add-on From File. Import the exported library if necessary. This allows unsigned add-ons browser-wide in builds that honor the preference. Mercury's source build configuration disables mandatory signing, but this particular macOS binary's enforcement has not been verified. If it rejects the package as unsigned/corrupt, a compatible signed build or a build permitting unsigned extensions is needed; the temporary loader will still not persist across restarts.
 
 Source: [Mercury build configuration](https://github.com/Alex313031/Mercury/blob/main/mozconfigs/mozconfig), [Mozilla signing behavior](https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox).
+
+
+## Restore Project and Clear Cart
+Open a project (or Miscellaneous) and click **Restore project**. Only **Planned** parts are included; Ordered and Received parts stay excluded and statuses do not change. The preview checks the exact MakerBazar variants, shows the current cart that will be replaced, and requires the replacement checkbox before proceeding. Other-store products, ambiguous variants, sold-out variants, an empty Planned list or a cart changed since the preview block the operation before clearing. Duplicate saved variants are combined by quantity.
+
+The extension saves the previous cart lines locally before replacing them. If the store cannot add the exact quantities, it attempts to restore the previous cart. Recovery can fail if items become unavailable or the network fails; the popout reports that explicitly and offers a previous-cart JSON backup. Keep the store tab and restore window open until the result appears. Shipping, discounts and availability remain controlled by the store.
+
+On MakerBazar's cart page, **Clear Cart** appears above **Save Cart**. Clear Cart immediately empties the store cart **without confirmation**, then refreshes the page. It does not remove parts from the extension library.

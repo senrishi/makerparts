@@ -68,6 +68,10 @@ function render() {
   $("#heading").textContent =
     project?.name || (selected === MISC_ID ? "Miscellaneous" : "Projects");
   const home = !selected;
+  $("#restore-project").hidden = home;
+  $("#restore-project").disabled = !state.parts.some(
+    (part) => part.projectId === selected && part.status === "planned",
+  );
   $("#totals").hidden = home;
   $("#cost-overview").hidden = !home;
   $("#part-toolbar").hidden = home;
@@ -127,6 +131,15 @@ function render() {
     },
   });
 }
+$("#restore-project").onclick = () =>
+  api.windows.create({
+    url: api.runtime.getURL(
+      `pages/restore.html?view=restore&projectId=${encodeURIComponent(selected)}`,
+    ),
+    type: "popup",
+    width: 540,
+    height: 700,
+  });
 $("#add-part").onclick = () => edit();
 $("#close-editor").onclick = () => $("#editor").close();
 for (const id of ["#search", "#category-filter", "#status-filter"])

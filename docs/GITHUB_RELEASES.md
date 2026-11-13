@@ -15,7 +15,7 @@ Public Firefox distribution is independent of repository visibility. The listing
 The workflow is prepared but no Mozilla upload has been performed while credentials are absent. Current public signing build requires Firefox 140+, and cannot be installed in Mercury 129. Use the local Mercury compatibility workflow until you use a compatible browser. Public listing does not bypass that version requirement.
 
 ## What runs automatically
-- **Push main / pull request:** Node 24 install, formatting check, 12 model tests, builds, strict Firefox release lint, real Chromium integration, install ZIPs/XPI and reviewer source archive. Artifacts are attached to the run for 14 days.
+- **Push main / pull request:** Node 24 install, formatting check, unit tests, builds, strict Firefox release lint, real Chromium integration, install ZIPs/XPI and reviewer source archive. Artifacts are attached to the run for 14 days.
 - **Push `v*` tag:** the same checks must pass first. The publication job verifies the tag matches package.json, builds/validates again, uploads readable reviewer source and the release package to Mozilla's listed channel.
 - **Manual Publish Firefox run:** submits the checked-out version through the same pipeline, useful for the initial submission. A previously submitted version cannot be reused.
 

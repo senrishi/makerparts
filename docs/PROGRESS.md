@@ -141,3 +141,12 @@
 - Added source-build fingerprints to the generated UI/background, preflight read checks before mutations, and server-side rejection of stale view writes. Legacy/mismatched builds now show explicit reload instructions instead of an unexplained Unknown action.
 - Added messaging tests for legacy workers, matching builds and a mid-request update. Bumped patch version to 0.1.1; the pending Mozilla 0.1.0 submission remains unchanged, with no new publication tag created.
 - Validation: 15 unit tests pass; Chromium integration passes cart saving and rejects an intentionally stale view without changing library data. Updated the move-part integration check to wait for asynchronous completion rather than assuming the click has finished the write. Strict Firefox release validation reports zero errors/notices/warnings. Rebuilt 0.1.1 browser packages.
+
+## Restore Project, immediate Clear Cart and pinned sidebar
+- Added MakerBazar Restore Project for Planned parts only, preserving quantities and excluding Ordered/Received. Preflight resolves exact variants, blocks other stores/ambiguous or sold-out variants, and previews the current cart before explicit replacement confirmation.
+- Cart replacement rechecks the preview snapshot, backs up previous cart lines locally, verifies exact resulting quantities and attempts rollback on failure. Recovery failure is explicit and a previous-cart JSON download is available.
+- Added immediate Clear Cart above Save Cart only on MakerBazar cart pages, without a confirmation dialog per user instruction. Success refreshes the cart; extension library records are unchanged.
+- Pinned the desktop sidebar to the viewport, with independent project-list scrolling and always-visible backup/settings controls. Narrow screens retain compact layout.
+- Added restore, stock-failure, rollback, cart-change and direct-clear unit coverage. Chromium integration verified Planned-only restore, exact quantities, persisted previous-cart backup, no-confirmation clear and sticky controls with a long page/navigation.
+- Existing Mozilla 0.1.0 review submission is unchanged; future release metadata now describes the explicit store-cart write features accurately.
+- Final validation: 21 unit tests and full Chromium integration pass. Visually checked the pinned sidebar and restore success view. Strict Firefox release lint is clean. Store mutation tests use controlled fixtures; no live user cart was changed during development. Live MakerBazar theme/session behavior still requires a user check after reloading.

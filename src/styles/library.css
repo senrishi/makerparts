@@ -439,3 +439,29 @@ dialog::backdrop {
     text-align: right;
   }
 }
+@media (min-width: 601px) {
+  .app > aside {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    align-self: start;
+  }
+  .app > aside > .brand,
+  .app > aside > .primary,
+  .app > aside > .settings-link {
+    flex-shrink: 0;
+  }
+  .app > aside nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    align-content: start;
+    scrollbar-width: thin;
+  }
+  .app > aside .backup {
+    flex-shrink: 0;
+    margin-top: 0;
+    padding-top: 16px;
+  }
+}

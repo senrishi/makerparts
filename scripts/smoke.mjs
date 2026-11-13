@@ -19,6 +19,13 @@ const launch = () =>
       `--load-extension=${extension}`,
     ],
   });
+async function clickFloating(page, clear = false) {
+  const host = page.locator("#makerparts-floating");
+  const box = await host.boundingBox();
+  await host.click({
+    position: { x: box.width / 2, y: clear ? 20 : box.height - 20 },
+  });
+}
 let context = await launch();
 const worker =
   context.serviceWorkers()[0] ||
@@ -143,7 +150,7 @@ await shop.goto("https://makerbazar.in/products/test-board");
 await shop.locator("select").selectOption("22");
 await shop.locator("#makerparts-floating").waitFor();
 const captureWindow = context.waitForEvent("page");
-await shop.locator("#makerparts-floating").click();
+await clickFloating(shop);
 const capture = await captureWindow;
 await capture.waitForLoadState();
 await capture.waitForFunction(() =>
@@ -250,7 +257,7 @@ await shop.evaluate(() =>
 );
 await shop.locator("select").selectOption("11");
 const fallbackWindow = context.waitForEvent("page");
-await shop.locator("#makerparts-floating").click();
+await clickFloating(shop);
 const fallback = await fallbackWindow;
 await fallback.waitForLoadState();
 await fallback.waitForFunction(() =>
@@ -314,7 +321,7 @@ assert.equal(
 );
 await toolbarCart.close();
 let cartWindowPromise = context.waitForEvent("page");
-await shop.locator("#makerparts-floating").click();
+await clickFloating(shop);
 let cartWindow = await cartWindowPromise;
 await cartWindow.waitForLoadState();
 await cartWindow.getByLabel("New project name").fill("Cart build");
@@ -354,7 +361,7 @@ await page
   .getByRole("link", { name: "10k resistor pack", exact: true })
   .waitFor();
 cartWindowPromise = context.waitForEvent("page");
-await shop.locator("#makerparts-floating").click();
+await clickFloating(shop);
 cartWindow = await cartWindowPromise;
 await cartWindow.waitForLoadState();
 await cartWindow
@@ -367,7 +374,7 @@ await cartWindow
 await cartWindow.waitForEvent("close");
 cartPayload = { currency: "INR", items: [] };
 cartWindowPromise = context.waitForEvent("page");
-await shop.locator("#makerparts-floating").click();
+await clickFloating(shop);
 cartWindow = await cartWindowPromise;
 await cartWindow.waitForLoadState();
 await cartWindow
@@ -397,6 +404,123 @@ assert.equal(
 );
 assert.equal(await page.locator(".part-card").count(), 0);
 await page.screenshot({ path: "artifacts/projects-home.png", fullPage: true });
+// Restore a project into a fixture cart, then clear it with one click.
+await context.route("https://makerbazar.in/products/resistors.js", (route) =>
+  route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({
+      variants: [{ id: 101, title: "1/4 W / 100 pcs", available: true }],
+    }),
+  }),
+);
+cartPayload = {
+  currency: "INR",
+  items: [
+    {
+      id: 303,
+      variant_id: 303,
+      quantity: 2,
+      product_title: "Previous cart item",
+      properties: { Color: "Black" },
+    },
+  ],
+};
+let clears = 0;
+await context.route("https://makerbazar.in/cart/clear.js", (route) => {
+  clears++;
+  cartPayload.items = [];
+  return route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify(cartPayload),
+  });
+});
+await context.route("https://makerbazar.in/cart/add.js", (route) => {
+  cartPayload.items = route
+    .request()
+    .postDataJSON()
+    .items.map((item) => ({
+      ...item,
+      variant_id: item.id,
+      product_title: item.name || "Restored item",
+    }));
+  return route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify({ items: cartPayload.items }),
+  });
+});
+await page.locator(".project-tile").filter({ hasText: "Cart build" }).click();
+const capacitor = page
+  .locator(".part-card")
+  .filter({ hasText: "Ceramic capacitor" });
+await capacitor.getByRole("button", { name: "Edit", exact: true }).click();
+await page.locator("summary").click();
+await page.locator("select[name=status]").selectOption("ordered");
+await page.getByRole("button", { name: "Save changes" }).click();
+await capacitor.locator(".status.ordered").waitFor();
+const restoreWindowPromise = context.waitForEvent("page");
+await page
+  .getByRole("button", { name: "Restore project", exact: true })
+  .click();
+const restoreWindow = await restoreWindowPromise;
+await restoreWindow.waitForLoadState();
+await restoreWindow.getByRole("checkbox").waitFor();
+assert.equal(clears, 0);
+assert.equal(await restoreWindow.getByText(/Ceramic capacitor/).count(), 0);
+await restoreWindow.getByRole("checkbox").check();
+await restoreWindow
+  .getByRole("button", { name: "Restore project", exact: true })
+  .click();
+await restoreWindow
+  .getByRole("heading", { name: "Project restored" })
+  .waitFor();
+assert.equal(cartPayload.items.length, 1);
+assert.equal(String(cartPayload.items[0].id), "101");
+assert.equal(cartPayload.items[0].quantity, 3);
+const backup = await page.evaluate(
+  async () =>
+    (await chrome.storage.local.get("previousCartBackup")).previousCartBackup,
+);
+assert.equal(String(backup.items[0].id), "303");
+await restoreWindow.screenshot({
+  path: "artifacts/restore-project.png",
+  fullPage: true,
+});
+await restoreWindow.close();
+await shop.waitForLoadState();
+await shop.locator("#makerparts-floating").waitFor();
+let clearDialogs = 0;
+shop.on("dialog", (dialog) => {
+  clearDialogs++;
+  dialog.dismiss();
+});
+const clearReload = shop.waitForEvent("load");
+await clickFloating(shop, true);
+await clearReload;
+assert.equal(cartPayload.items.length, 0);
+assert.equal(clearDialogs, 0);
+assert.equal(clears, 2);
+// A long project and long navigation must not push backup/settings off screen.
+await page.setViewportSize({ width: 1280, height: 700 });
+await page.locator("#parts").evaluate((root) => {
+  const card = root.querySelector(".part-card");
+  for (let i = 0; i < 25; i++) root.append(card.cloneNode(true));
+});
+await page.locator("nav").evaluate((nav) => {
+  const button = nav.lastElementChild;
+  for (let i = 0; i < 40; i++) nav.append(button.cloneNode(true));
+});
+await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+const side = await page.locator("aside").boundingBox();
+const exportBounds = await page
+  .getByRole("button", { name: "Export backup" })
+  .boundingBox();
+const settingsBounds = await page
+  .getByRole("link", { name: "Settings", exact: true })
+  .boundingBox();
+assert.ok(Math.abs(side.y) < 1);
+assert.ok(exportBounds.y >= 0 && exportBounds.y + exportBounds.height <= 700);
+assert.ok(settingsBounds.y + settingsBounds.height <= 700);
+await page.screenshot({ path: "artifacts/sticky-sidebar.png" });
 await context.route("https://example.com/*", (route) =>
   route.fulfill({ contentType: "text/html", body: "<h1>Other store</h1>" }),
 );

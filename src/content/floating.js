@@ -23,9 +23,33 @@
       : "Save this page and selected variant to a project";
     host.setAttribute("aria-label", button.textContent);
   };
+  const clear = document.createElement("button");
+  clear.textContent = "Clear Cart";
+  clear.style.cssText = "display:block;margin:0 0 8px auto;background:#242424";
+  clear.onclick = async () => {
+    clear.disabled = true;
+    button.disabled = true;
+    clear.textContent = "Clearing…";
+    try {
+      const response = await (globalThis.browser || chrome).runtime.sendMessage(
+        { channel: "makerparts", action: { type: "clearStoreCart" } },
+      );
+      if (!response?.ok)
+        throw Error(response?.error || "Could not clear cart.");
+      clear.textContent = "Cart cleared";
+      setTimeout(() => location.reload(), 350);
+    } catch {
+      clear.textContent = "Clear failed · retry";
+      clear.disabled = false;
+      button.disabled = false;
+    }
+  };
+  clear.style.display = isCart() ? "block" : "none";
+  window.addEventListener("popstate", () => {
+    clear.style.display = isCart() ? "block" : "none";
+  });
   updateLabel();
   window.addEventListener("popstate", updateLabel);
-  button.title = "Save this page and selected variant to a project";
   button.onclick = async () => {
     button.disabled = true;
     try {
@@ -42,6 +66,6 @@
       button.disabled = false;
     }
   };
-  shadow.append(style, button);
+  shadow.append(style, clear, button);
   document.documentElement.append(host);
 })();
