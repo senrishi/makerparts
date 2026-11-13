@@ -1,3 +1,4 @@
+import { renderCostOverview } from "../components/cost-overview.js";
 import { renderProjectList } from "../components/project-list.js";
 import { CATEGORIES, totals, MISC_ID } from "../core/model.js";
 import { api, request } from "../core/api.js";
@@ -41,7 +42,20 @@ function render() {
     selected = "";
   $("#projects").replaceChildren();
   const nav = (id, name) => {
-    const b = el("button", name, selected === id ? "selected" : "");
+    const b = el(
+      "button",
+      name,
+      [selected === id ? "selected" : "", id === "" ? "nav-home" : ""]
+        .filter(Boolean)
+        .join(" "),
+    );
+    if (id === "") {
+      b.setAttribute("aria-label", "Projects");
+      const icon = el("span", "⌂", "home-icon");
+      icon.setAttribute("aria-hidden", "true");
+      b.prepend(icon);
+    }
+    if (selected === id) b.setAttribute("aria-current", "page");
     b.onclick = () => {
       selectList(id);
     };
@@ -55,10 +69,12 @@ function render() {
     project?.name || (selected === MISC_ID ? "Miscellaneous" : "Projects");
   const home = !selected;
   $("#totals").hidden = home;
+  $("#cost-overview").hidden = !home;
   $("#part-toolbar").hidden = home;
   if (home) {
     $("#summary").textContent = "";
-    renderProjectList($("#parts"), state.projects, selectList);
+    renderCostOverview($("#cost-overview"), state.parts);
+    renderProjectList($("#parts"), state.projects, state.parts, selectList);
     return;
   }
   $("#rename-project").hidden = $("#delete-project").hidden = !project;

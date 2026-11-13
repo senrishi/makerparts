@@ -129,3 +129,52 @@ test("new-project default with a blank name falls back to Miscellaneous", async 
   assert.equal(s.projects[0].name, "Radio build");
   assert.equal(s.parts[0].projectId, s.projects[0].id);
 });
+test("cart batch assigns one project, keeps quantities, and rejects atomically", () => {
+  const state = emptyState();
+  const parts = [
+    { ...part, quantity: 3 },
+    { ...part, name: "Capacitor", category: "Capacitors", quantity: 5 },
+  ];
+  const s = mutate(state, {
+    type: "saveCart",
+    newProject: "Cart build",
+    parts,
+  });
+  assert.equal(s.projects.length, 1);
+  assert.equal(s.parts.length, 2);
+  assert.ok(s.parts.every((p) => p.projectId === s.projects[0].id));
+  assert.equal(s.parts[1].quantity, 5);
+  assert.throws(() =>
+    mutate(state, {
+      type: "saveCart",
+      newProject: "Bad cart",
+      parts: [parts[0], { ...parts[1], quantity: 0 }],
+    }),
+  );
+  assert.deepEqual(state, emptyState());
+  assert.throws(() => mutate(state, { type: "saveCart", parts: [] }));
+  const misc = mutate(state, {
+    type: "saveCart",
+    projectId: "__new",
+    newProject: "",
+    parts,
+  });
+  assert.ok(misc.parts.every((p) => p.projectId === "__misc__"));
+});
+test("cost estimates split planned from purchased and retain currencies", async () => {
+  const { estimates } = await import("../src/core/estimates.js");
+  assert.deepEqual(
+    estimates([
+      { ...part, price: 100, quantity: 2 },
+      { ...part, price: 50, quantity: 3, status: "ordered" },
+      { ...part, price: 10, currency: "USD", quantity: 1, status: "received" },
+      { ...part, price: null },
+    ]),
+    {
+      remaining: { INR: 200 },
+      spent: { INR: 150, USD: 10 },
+      value: { INR: 350, USD: 10 },
+      unpriced: 1,
+    },
+  );
+});

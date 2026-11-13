@@ -312,3 +312,130 @@ dialog::backdrop {
     grid-template-columns: 1fr;
   }
 }
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.cost-card {
+  padding: 18px 20px;
+  border: 1px solid #d6d6d6;
+  border-radius: 10px;
+  background: #fafafa;
+}
+.cost-label {
+  display: block;
+  color: #686868;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.cost-card strong {
+  display: block;
+  font-size: 26px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.estimate-note {
+  margin: 8px 0 0;
+}
+.project-tile strong {
+  display: block;
+}
+.project-value {
+  display: block;
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+.project-unpriced {
+  display: block;
+  font-size: 14px;
+  color: #686868;
+  margin-top: 4px;
+}
+@media (max-width: 900px) {
+  .cost-grid {
+    gap: 10px;
+  }
+  .cost-card {
+    padding: 14px;
+  }
+  .cost-card strong {
+    font-size: 21px;
+  }
+}
+@media (max-width: 600px) {
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+  .cost-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .cost-label {
+    margin: 0;
+  }
+}
+.app nav button.nav-home {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 750;
+  border: 1px solid #8a8a8a;
+  background: #d8d8d8;
+  color: #202020;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+}
+.app nav button.nav-home.selected {
+  border-color: #4f4f4f;
+  box-shadow: inset 3px 0 #333;
+}
+.home-icon {
+  font-size: 23px;
+  line-height: 1;
+}
+.app nav button:not(.nav-home):not(.selected) {
+  background: transparent;
+}
+.cost-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cost-label {
+  margin-bottom: 0;
+}
+.cost-amounts {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+.project-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.project-value,
+.project-unpriced {
+  margin-top: 0;
+}
+@media (max-width: 600px) {
+  .cost-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cost-amounts {
+    width: auto;
+    text-align: right;
+  }
+}

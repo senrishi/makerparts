@@ -1,4 +1,19 @@
-import { mkdir, cp, writeFile, rm } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, cp, writeFile, rm, readFile, readdir } from "node:fs/promises";
+// Keep source styles modular, but ship one revisioned stylesheet per build.
+const imports = await readFile("src/styles/main.css", "utf8");
+const cssFiles = [...imports.matchAll(/@import url\("\.\/(.+?)"\);/g)].map(
+  (match) => match[1],
+);
+const stylesheet = (
+  await Promise.all(
+    cssFiles.map((file) => readFile(`src/styles/${file}`, "utf8")),
+  )
+).join("\n");
+const styleRevision = createHash("sha256")
+  .update(stylesheet)
+  .digest("hex")
+  .slice(0, 12);
 const base = {
   manifest_version: 3,
   name: "MakerParts",
@@ -28,6 +43,19 @@ for (const target of ["chrome", "firefox", "firefox-release"]) {
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   await cp("src", dir, { recursive: true });
+  await writeFile(`${dir}/styles/main.css`, stylesheet);
+  for (const page of await readdir(`${dir}/pages`))
+    if (page.endsWith(".html")) {
+      const file = `${dir}/pages/${page}`;
+      const html = await readFile(file, "utf8");
+      await writeFile(
+        file,
+        html.replace(
+          'href="../styles/main.css"',
+          `href="../styles/main.css?v=${styleRevision}"`,
+        ),
+      );
+    }
   const manifest = {
     ...base,
     background:

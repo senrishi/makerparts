@@ -200,7 +200,11 @@ assert.equal(await capture.locator("[name=sku]").inputValue(), "S3-22");
 assert.equal(await capture.locator("[name=price]").inputValue(), "599");
 assert.match(await capture.locator("[name=url]").inputValue(), /variant=22/);
 await capture.getByRole("button", { name: "Save part", exact: true }).click();
-await capture.getByRole("status").filter({ hasText: "Saved" }).waitFor();
+await capture
+  .getByRole("status")
+  .filter({ hasText: "Saved successfully" })
+  .waitFor();
+await capture.waitForEvent("close");
 await page.reload();
 await page
   .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
@@ -259,6 +263,112 @@ assert.equal(
 );
 assert.equal(await fallback.locator("[name=price]").inputValue(), "300");
 await fallback.close();
+let cartPayload = {
+  currency: "INR",
+  items: [
+    {
+      product_title: "10k resistor pack",
+      variant_title: "1/4 W / 100 pcs",
+      variant_id: 101,
+      sku: "R-101",
+      url: "/products/resistors?variant=101",
+      quantity: 3,
+      final_price: 2500,
+    },
+    {
+      product_title: "Ceramic capacitor",
+      variant_title: "100 nF",
+      variant_id: 202,
+      sku: "C-202",
+      url: "/products/capacitor?variant=202",
+      quantity: 5,
+      final_price: 1000,
+    },
+  ],
+};
+await context.route("https://makerbazar.in/cart", (route) =>
+  route.fulfill({ contentType: "text/html", body: "<h1>Your cart</h1>" }),
+);
+await context.route("https://makerbazar.in/cart.js", (route) =>
+  route.fulfill({
+    contentType: "application/json",
+    body: JSON.stringify(cartPayload),
+  }),
+);
+await shop.goto("https://makerbazar.in/cart");
+await shop.locator("#makerparts-floating").waitFor();
+assert.equal(
+  await shop.locator("#makerparts-floating").getAttribute("aria-label"),
+  "Save Cart",
+);
+let cartWindowPromise = context.waitForEvent("page");
+await shop.locator("#makerparts-floating").click();
+let cartWindow = await cartWindowPromise;
+await cartWindow.waitForLoadState();
+await cartWindow.getByLabel("New project name").fill("Cart build");
+await cartWindow.locator(".cart-line").first().waitFor();
+assert.equal(await cartWindow.locator(".cart-line").count(), 2);
+assert.match(await cartWindow.locator("#cart-summary").innerText(), /8 units/);
+await cartWindow.screenshot({
+  path: "artifacts/cart-preview.png",
+  fullPage: true,
+});
+await cartWindow.getByRole("button", { name: "Save entire cart" }).click();
+await cartWindow
+  .getByText("Saved 2 parts to Cart build.", { exact: true })
+  .waitFor();
+await cartWindow.waitForEvent("close");
+await page.goto(`chrome-extension://${id}/pages/library.html`);
+await page.locator(".project-tile").filter({ hasText: "Cart build" }).click();
+assert.equal(await page.locator(".part-card").count(), 2);
+assert.match(await page.locator("#totals").innerText(), /125/);
+await page
+  .getByRole("link", { name: "10k resistor pack", exact: true })
+  .waitFor();
+cartWindowPromise = context.waitForEvent("page");
+await shop.locator("#makerparts-floating").click();
+cartWindow = await cartWindowPromise;
+await cartWindow.waitForLoadState();
+await cartWindow
+  .locator("select[name=project]")
+  .selectOption({ label: "Weather station" });
+await cartWindow.getByRole("button", { name: "Save entire cart" }).click();
+await cartWindow
+  .getByText("Saved 2 parts to Weather station.", { exact: true })
+  .waitFor();
+await cartWindow.waitForEvent("close");
+cartPayload = { currency: "INR", items: [] };
+cartWindowPromise = context.waitForEvent("page");
+await shop.locator("#makerparts-floating").click();
+cartWindow = await cartWindowPromise;
+await cartWindow.waitForLoadState();
+await cartWindow
+  .getByText("Your MakerBazar cart is empty.", { exact: true })
+  .waitFor();
+assert.equal(
+  await cartWindow.getByRole("button", { name: "Save entire cart" }).count(),
+  0,
+);
+await cartWindow.close();
+await page.goto(`chrome-extension://${id}/pages/library.html`);
+await page.locator(".project-tile").filter({ hasText: "Cart build" }).waitFor();
+assert.equal(await page.locator(".cost-card").count(), 3);
+for (const card of await page.locator(".cost-card").all()) {
+  const label = await card.locator(".cost-label").boundingBox();
+  const amount = await card.locator(".cost-amounts").boundingBox();
+  assert.ok(amount.y - (label.y + label.height) >= 10);
+}
+for (const tile of await page.locator(".project-tile").all()) {
+  const name = await tile.locator("strong").boundingBox();
+  const price = await tile.locator(".project-value").boundingBox();
+  assert.ok(price.y - (name.y + name.height) >= 10);
+}
+assert.equal(
+  await page.locator("nav .nav-home").getAttribute("aria-label"),
+  "Projects",
+);
+assert.equal(await page.locator(".part-card").count(), 0);
+await page.screenshot({ path: "artifacts/projects-home.png", fullPage: true });
 await context.route("https://example.com/*", (route) =>
   route.fulfill({ contentType: "text/html", body: "<h1>Other store</h1>" }),
 );
@@ -267,5 +377,5 @@ assert.equal(await shop.locator("#makerparts-floating").count(), 0);
 assert.deepEqual(errors, []);
 await context.close();
 console.log(
-  "PASS: Chromium create/save/edit, totals, full browser restart persistence, popup save, dark theme persistence, selected variant price/SKU/link, MakerBazar-only floating capture.",
+  "PASS: Chromium create/save/edit, totals, full browser restart persistence, popup save, dark theme persistence, selected variant price/SKU/link, MakerBazar-only floating capture, cart preview/bulk save to new and existing projects, empty cart, home cost overview.",
 );

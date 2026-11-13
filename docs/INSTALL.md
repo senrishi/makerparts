@@ -44,3 +44,10 @@ No server, telemetry, remote scripts or automatic shopping actions. MakerBazar a
 The home page shows project names and Miscellaneous. Open a list to view its parts. The quick-add form defaults to **Create a new project**, with the new name field visible. Enter a name to create/use that project; leave it blank to save to **Miscellaneous**. Miscellaneous is also in the dropdown. Edit a part to move it to another list. Existing project assignments remain unchanged.
 
 The hub uses larger text and a matte black/gray default appearance. Your explicit theme preference is retained. The floating save window resizes with its window; the toolbar popup keeps a compact fixed size.
+
+## Save a MakerBazar cart
+On MakerBazar's cart page, the floating button changes to **Save Cart**. Click it to preview the cart, then choose an existing project, name a new one, or leave the new name blank for Miscellaneous. **Save entire cart** copies all listed variants and quantities into that list without changing the store cart. Repeating the save adds another copy. The preview is a snapshot; reopen it if the store cart changes.
+
+Home estimates use listed unit prices × quantities. **Still to buy** covers planned parts; **Already spent** covers ordered and received parts; **Total parts value** covers all saved parts including Miscellaneous. Currencies remain separate and missing prices are flagged. Shipping and checkout-only adjustments are not estimated.
+
+After a successful individual or cart save, the popout shows **Saved successfully** and closes after 1.4 seconds. Errors stay open for correction. After updating this development build, reload the extension in `about:debugging` / `chrome://extensions`, then refresh both your library and MakerBazar tabs so their code and styles match.

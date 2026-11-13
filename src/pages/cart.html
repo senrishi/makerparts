@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Save Cart · MakerParts</title>
+    <script src="popup-layout.js"></script>
+    <script src="../settings/theme.js"></script>
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body class="popup cart-popup">
+    <header>
+      <a class="brand" href="library.html" target="_blank">▧ MakerParts</a>
+    </header>
+    <main>
+      <h1>Save Cart</h1>
+      <div id="form-root">
+        <p class="muted" role="status">Reading your cart…</p>
+      </div>
+      <p id="message" role="status" aria-live="polite"></p>
+    </main>
+    <footer>
+      <a href="library.html" target="_blank">Open project library ↗</a
+      ><span>Stored on this device</span>
+    </footer>
+    <script type="module" src="cart.js"></script>
+  </body>
+</html>

@@ -22,3 +22,9 @@
 The toolbar popup uses explicit 460 × 560 pixel intrinsic dimensions. Avoid `max-height: 100vh` and `max-width: 100vw` on the popup body: during browser popup auto-sizing, viewport-dependent constraints can create a circular measurement and collapse the popup. Fields scroll inside the form while the Save action stays in place. Standalone capture URLs have a `capture-window` class with viewport-filling sizing and a centered content width; this mode is intentionally separate from toolbar auto-sizing.
 
 The form mounts as soon as storage is read. Product capture then fills it asynchronously, unless the user has started editing. Loading and failure messages are visible independently of capture. Extension storage keys and the Firefox extension ID remain unchanged during the reorganization.
+
+Cart capture uses a self-contained `capture/cart.js` function executed in the store tab to read its current cart session. `pages/cart.js` renders a preview using the shared project picker. `saveCart` resolves the destination once and validates all lines before the background storage queue commits the result. Home cost calculations live in `core/estimates.js`, with presentation in `components/cost-overview.js`.
+
+Shopify endpoint behavior: [Ajax Cart API](https://shopify.dev/docs/api/ajax/reference/cart).
+
+The build combines the source CSS modules into one generated `styles/main.css` and adds a content-hash revision to each page's stylesheet link. This prevents cached imported styles from lagging behind new markup. Shared `save-feedback.js` renders accessible confirmation and closes transient capture views only after successful persistence.

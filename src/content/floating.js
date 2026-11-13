@@ -14,13 +14,25 @@
   style.textContent =
     "button{font:600 14px system-ui;cursor:pointer;color:#fff;background:#303030;border:1px solid #aaaaaa;border-radius:28px;padding:14px 20px;box-shadow:0 4px 20px #0004}button:hover{background:#181818}button:focus-visible{outline:3px solid #aaaaaa;outline-offset:3px}";
   const button = document.createElement("button");
-  button.textContent = "＋ Save to MakerParts";
+  const isCart = () => /\/cart\/?$/.test(location.pathname);
+  const updateLabel = () => {
+    button.textContent = isCart() ? "Save Cart" : "＋ Save to MakerParts";
+    button.title = isCart()
+      ? "Save all cart items to a project"
+      : "Save this page and selected variant to a project";
+    host.setAttribute("aria-label", button.textContent);
+  };
+  updateLabel();
+  window.addEventListener("popstate", updateLabel);
   button.title = "Save this page and selected variant to a project";
   button.onclick = async () => {
     button.disabled = true;
     try {
       const response = await (globalThis.browser || chrome).runtime.sendMessage(
-        { channel: "makerparts", action: { type: "openCapture" } },
+        {
+          channel: "makerparts",
+          action: { type: isCart() ? "openCartCapture" : "openCapture" },
+        },
       );
       if (response?.error) throw Error(response.error);
     } catch {

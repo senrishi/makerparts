@@ -110,6 +110,31 @@ export function mutate(state, action) {
     const i = s.parts.findIndex((x) => x.id === p.id);
     if (i < 0) s.parts.push(p);
     else s.parts[i] = p;
+  } else if (action.type === "saveCart") {
+    if (!Array.isArray(action.parts) || !action.parts.length)
+      throw Error("Your cart is empty.");
+    if (action.parts.length > 1000)
+      throw Error("Cart is too large (maximum 1,000 lines).");
+    let next = s;
+    let projectId = action.projectId;
+    // Resolve/create once; validate the entire batch before storage is changed.
+    if (action.newProject?.trim()) {
+      const name = action.newProject.trim();
+      let project = next.projects.find(
+        (p) => p.name.toLowerCase() === name.toLowerCase(),
+      );
+      if (!project) {
+        next = mutate(next, { type: "project", name });
+        project = next.projects.at(-1);
+      }
+      projectId = project.id;
+    }
+    for (const part of action.parts)
+      next = mutate(next, {
+        type: "save",
+        part: { ...part, id: undefined, projectId },
+      });
+    return next;
   } else if (action.type === "deletePart")
     s.parts = s.parts.filter((p) => p.id !== action.id);
   else if (action.type === "deleteProject") {

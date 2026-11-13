@@ -1,4 +1,5 @@
-import { CATEGORIES, MISC_ID } from "../core/model.js";
+import { projectPicker } from "./project-picker.js";
+import { CATEGORIES } from "../core/model.js";
 import { request } from "../core/api.js";
 import { el } from "./dom.js";
 export function partForm(root, state, part = {}, onSave) {
@@ -10,17 +11,7 @@ export function partForm(root, state, part = {}, onSave) {
     ? "Save changes"
     : "Save part";
   const fields = form.elements;
-  const miscellaneous = el("option", "Miscellaneous");
-  miscellaneous.value = MISC_ID;
-  fields.project.append(miscellaneous);
-  for (const p of state.projects) {
-    const opt = el("option", p.name);
-    opt.value = p.id;
-    fields.project.append(opt);
-  }
-  const opt = el("option", "＋ Create a new project");
-  opt.value = "__new";
-  fields.project.append(opt);
+  const destination = projectPicker(form, state, part.projectId);
   CATEGORIES.forEach((c) => {
     const opt = el("option", c);
     opt.value = c;
@@ -28,7 +19,6 @@ export function partForm(root, state, part = {}, onSave) {
   });
   for (const key of ["name", "url", "notes", "model", "sku"])
     fields[key].value = part[key] || "";
-  fields.project.value = part.projectId || "__new";
   fields.category.value = part.category || "Other";
   fields.price.value = part.price ?? "";
   fields.currency.value = /^[A-Z]{3}$/.test(part.currency)
@@ -48,13 +38,6 @@ export function partForm(root, state, part = {}, onSave) {
     },
     true,
   );
-  const toggle = () => {
-    const show = fields.project.value === "__new";
-    form.querySelector("#new-project-field").hidden = !show;
-    fields.newProject.required = false;
-  };
-  fields.project.onchange = toggle;
-  toggle();
   form.onsubmit = async (e) => {
     e.preventDefault();
     const button = form.querySelector(".save");
@@ -64,10 +47,7 @@ export function partForm(root, state, part = {}, onSave) {
       const currency = fields.currency.value.toUpperCase();
       const next = await request({
         type: "save",
-        newProject:
-          fields.project.value === "__new"
-            ? fields.newProject.value.trim()
-            : undefined,
+        newProject: destination().newProject,
         part: {
           id: part.id,
           name: fields.name.value,

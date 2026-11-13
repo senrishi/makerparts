@@ -90,3 +90,20 @@ html[data-theme="dark"] .settings-card {
 html[data-theme="dark"] .settings-link:hover {
   background: #303030;
 }
+html[data-theme="dark"] .cost-card {
+  background: #202020;
+  border-color: #383838;
+}
+html[data-theme="dark"] .cost-label,
+html[data-theme="dark"] .project-unpriced {
+  color: #ababab;
+}
+html[data-theme="dark"] .app nav button.nav-home {
+  background: #343434;
+  color: #f0f0f0;
+  border-color: #737373;
+}
+html[data-theme="dark"] .app nav button.nav-home.selected {
+  border-color: #b0b0b0;
+  box-shadow: inset 3px 0 #ddd;
+}

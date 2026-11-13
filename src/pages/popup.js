@@ -1,3 +1,4 @@
+import { showSaveSuccess } from "../components/save-feedback.js";
 import { api, request } from "../core/api.js";
 import { partForm } from "../components/part-form.js";
 import { suggestCategory } from "../core/model.js";
@@ -13,8 +14,13 @@ try {
   });
   const mount = (data, initial) =>
     partForm(root, data, initial, (next) => {
-      message.textContent = "✓ Saved to your project.";
-      mount(next, {});
+      dirty = true;
+      message.textContent = "";
+      const saved = next.parts.at(-1);
+      const name =
+        next.projects.find((project) => project.id === saved.projectId)?.name ||
+        "Miscellaneous";
+      showSaveSuccess(root, `Saved to ${name}.`);
     });
   mount(state, {});
   try {

@@ -82,3 +82,16 @@
 - Added an early standalone-window class only for source-tab capture URLs. Standalone capture fills its window and centers content up to 760px; toolbar popup keeps explicit intrinsic dimensions.
 - Narrow standalone windows stack project/category fields and scroll only the form fields while Save remains in view.
 - Validated 9 model tests, project-only home, Miscellaneous default fallback, moving a part into a project, and responsive capture at 1000×650 and 340×440 with Save visible. Release Firefox lint and format checks pass. Corrected hub auto margins so short project lists start at the top.
+
+## Save Cart and home cost overview
+- MakerBazar cart pages now show Save Cart instead of the single-part button. It reads the current cart through Shopify's read-only cart endpoint, previews all lines, quantities and prices, and asks for one destination.
+- Added shared project picker for individual and cart capture. Blank new-project names fall back to Miscellaneous; existing projects and explicit Miscellaneous selection are supported.
+- Bulk save validates and commits all lines together, preserving variant names, SKU, variant links, quantity and per-unit price. Empty carts and loading failures have explicit UI; the store cart is never changed.
+- Added compact Still to buy / Already spent / Total parts value cards on home, plus per-project values. Planned parts are remaining; ordered and received parts are spent. Totals include Miscellaneous and stay separated by currency. Unpriced parts are counted separately.
+
+## Sidebar hierarchy and save confirmation
+- Distinguished Projects home navigation with a house icon, border, heavier label and spacing from destination lists; active navigation has `aria-current`.
+- Individual and cart popouts now show an accessible Saved successfully notice after the storage write succeeds, then close automatically after 1.4 seconds. Errors and empty carts remain open. Ordinary full-page development views do not auto-close.
+- Corrected name/value spacing with separate rows and explicit gaps in home cost cards and project tiles. Build now combines modular CSS into a revisioned stylesheet to avoid stale imported styles after reload.
+- Final validation: 11 model tests pass; Chromium integration passes cart saves to new/existing projects, empty-cart handling, cost overview calculations, name/value spacing (at least 10px), Projects home navigation, and success-notice-driven auto-close for individual and cart popouts.
+- Visually inspected final matte project home and cart preview. Firefox release lint reports zero errors/notices/warnings; formatting checks pass. Browser packages regenerated. Live MakerBazar/Mercury behavior still needs user confirmation after extension and tab reloads.
