@@ -1,0 +1,11 @@
+import {mkdir,cp,writeFile,rm} from 'node:fs/promises';
+const base={manifest_version:3,name:'MakerParts',version:'0.1.0',description:'Save electronics parts into projects, with prices, categories and shopping progress.',permissions:['storage','activeTab','scripting'],action:{default_popup:'popup.html',default_title:'Save to MakerParts'},icons:{'48':'icon.svg','96':'icon.svg'},options_ui:{page:'library.html',open_in_tab:true}};
+for(const target of ['chrome','firefox']){
+ const dir=`dist/${target}`;await rm(dir,{recursive:true,force:true});await mkdir(dir,{recursive:true});await cp('src',dir,{recursive:true});
+ const manifest={...base,background:target==='chrome'?{service_worker:'background.js',type:'module'}:{scripts:['background-entry.js'],type:'module'}};
+ // Chrome extension icons require raster assets; use generated PNGs for both browsers.
+ manifest.icons={'48':'icon48.png','128':'icon128.png'};
+ if(target==='firefox')manifest.browser_specific_settings={gecko:{id:'makerparts@local.extension',strict_min_version:'140.0',data_collection_permissions:{required:['none']}}};
+ await writeFile(`${dir}/manifest.json`,JSON.stringify(manifest,null,2));await writeFile(`${dir}/background-entry.js`,"import './background.js';\n");
+}
+console.log('Built dist/chrome and dist/firefox');
