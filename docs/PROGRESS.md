@@ -32,3 +32,9 @@
 - Added `dist/firefox-legacy` for Firefox 115–139 with the same functionality and extension ID, omitting the newer data-consent manifest field.
 - Kept the Firefox 140+ signing build and its no-data-collection declaration intact.
 - Legacy build is for temporary local testing; runtime compatibility is not yet verified.
+
+## Mercury 129 installation path fix
+- User confirmed Mercury 129.0.2 and repeated the Firefox 140 minimum error.
+- Made the original `dist/firefox/manifest.json` path use the Firefox 115+ compatibility manifest, so selecting the original path no longer selects an incompatible build.
+- Moved modern signing manifest to `dist/firefox-release`; packaging still uses that modern build.
+- Confirmed generated default manifest declares minimum 115.0, below Mercury 129.0.2. Full Mercury runtime behavior remains unverified.

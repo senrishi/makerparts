@@ -16,7 +16,7 @@ Regular Firefox requires a **Mozilla-signed XPI**. A temporary add-on from `abou
 
 Signing needs your Mozilla account and may involve review. This repository does not include a signed XPI or credentials.
 
-For development only: open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, select `dist/firefox/manifest.json`. This build requires Firefox 140+. For Firefox 115–139 (including older Firefox-based browsers), select `dist/firefox-legacy/manifest.json` instead. The legacy build omits the Firefox 140 data-consent manifest field and is intended for local temporary testing. Both builds use the same extension ID; do not load them simultaneously. Export a backup before removing or replacing a development install.
+For development only: open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, select `dist/firefox/manifest.json`. This default development build supports Firefox 115+ and Mercury 129.0.2 at the manifest level. `dist/firefox-legacy` is an equivalent compatibility alias. The signed-distribution package is built from `dist/firefox-release` and requires Firefox 140+. Do not load multiple variants simultaneously: they use the same extension ID. Export a backup before removing or replacing a development install. Mercury runtime functionality remains to be verified.
 
 ## Daily use
 - Click the toolbar icon on a product page. Name, link and structured product price are suggested when the store supplies metadata. Review prices, variants and currency; shipping and taxes are not included automatically.
