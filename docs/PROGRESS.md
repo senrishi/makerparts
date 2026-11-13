@@ -125,3 +125,6 @@
 - Added initial public listing metadata, All Rights Reserved license, reviewer notes and reproducible source ZIP upload.
 - Signing credentials remain in GitHub secrets; no Mozilla upload attempted. Initial publication requires the user to add AMO_JWT_ISSUER and AMO_JWT_SECRET and run Publish Firefox.
 - Made Chromium integration portable to Linux runners.
+- Created and pushed the private GitHub repository with full commit history.
+- First hosted Linux build passed: https://github.com/senrishi/makerparts/actions/runs/43475093463 . This includes all 12 model tests, strict Firefox validation, Chromium integration, browser packages and reviewer source artifact upload.
+- Both workflows are active; repository is confirmed private. Mozilla secrets are not configured, so public submission has not run. User setup steps and release commands are documented in docs/GITHUB_RELEASES.md.
