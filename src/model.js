@@ -1,4 +1,4 @@
-export const CATEGORIES = ['Microcontrollers & boards','Active components','Passive components','Sensors','Power & batteries','Connectors & cables','Displays','Motors & actuators','Tools & hardware','Other'];
+export const CATEGORIES = ['Microcontrollers & boards','Active components','Passive components','Sensors','Power & batteries','Connectors & cables','Displays','Motors & actuators','Tools & hardware','Resistors','Capacitors','Other'];
 export const emptyState = () => ({version:1,projects:[],parts:[]});
 export function validUrl(value) { const url = new URL(value); if (!['http:','https:'].includes(url.protocol)) throw Error('Use an http or https product link.'); return url.href; }
 export function validateState(s) {
@@ -6,7 +6,7 @@ export function validateState(s) {
  const ids = new Set();
  for (const p of s.projects) { if (typeof p.id !== 'string' || !p.id || ids.has(p.id) || typeof p.name !== 'string' || !p.name.trim()) throw Error('Invalid project in backup.'); ids.add(p.id); }
  const partIds = new Set();
- for (const p of s.parts) { if (typeof p.id !== 'string' || !p.id || partIds.has(p.id) || !ids.has(p.projectId) || typeof p.name !== 'string' || !p.name.trim() || !CATEGORIES.includes(p.category) || !Number.isInteger(p.quantity) || p.quantity < 1 || !['planned','ordered','received'].includes(p.status) || !/^[A-Z]{3}$/.test(p.currency) || (p.price !== null && (typeof p.price !== 'number' || !Number.isFinite(p.price) || p.price < 0)) || typeof p.notes !== 'string') throw Error('Invalid part in backup.'); validUrl(p.url); partIds.add(p.id); }
+ for (const p of s.parts) { if (typeof p.id !== 'string' || !p.id || partIds.has(p.id) || !ids.has(p.projectId) || typeof p.name !== 'string' || !p.name.trim() || !CATEGORIES.includes(p.category) || !Number.isInteger(p.quantity) || p.quantity < 1 || !['planned','ordered','received'].includes(p.status) || !/^[A-Z]{3}$/.test(p.currency) || (p.price !== null && (typeof p.price !== 'number' || !Number.isFinite(p.price) || p.price < 0)) || typeof p.notes !== 'string' || (p.model !== undefined && typeof p.model !== 'string') || (p.sku !== undefined && typeof p.sku !== 'string')) throw Error('Invalid part in backup.'); validUrl(p.url); partIds.add(p.id); }
  return s;
 }
 export function mutate(state, action) {
@@ -27,6 +27,6 @@ export function mutate(state, action) {
 }
 export function totals(parts) { const result={}; for(const p of parts) if(p.price!==null)result[p.currency]=(result[p.currency]||0)+p.price*p.quantity; return result; }
 export function suggestCategory(name='') {
- const rules=[[/\b(esp32|esp8266|arduino|raspberry pi|stm32|rp2040|microcontroller|pico)\b/i,CATEGORIES[0]],[/\b(resistor|capacitor|inductor|potentiometer|resistance)\b/i,CATEGORIES[2]],[/\b(sensor|accelerometer|gyroscope|dht\d*|bme280)\b/i,CATEGORIES[3]],[/\b(mosfet|transistor|diode|op.?amp|led)\b/i,CATEGORIES[1]],[/\b(battery|power supply|charger|buck|boost|regulator)\b/i,CATEGORIES[4]],[/\b(connector|cable|jumper|header)\b/i,CATEGORIES[5]],[/\b(display|oled|lcd)\b/i,CATEGORIES[6]],[/\b(motor|servo|actuator|stepper)\b/i,CATEGORIES[7]]];
+ const rules=[[/\b(resistor|potentiometer|resistance)\b/i,'Resistors'],[/\bcapacitor\b/i,'Capacitors'],[/\b(esp32|esp8266|arduino|raspberry pi|stm32|rp2040|microcontroller|pico)\b/i,CATEGORIES[0]],[/\b(resistor|capacitor|inductor|potentiometer|resistance)\b/i,CATEGORIES[2]],[/\b(sensor|accelerometer|gyroscope|dht\d*|bme280)\b/i,CATEGORIES[3]],[/\b(mosfet|transistor|diode|op.?amp|led)\b/i,CATEGORIES[1]],[/\b(battery|power supply|charger|buck|boost|regulator)\b/i,CATEGORIES[4]],[/\b(connector|cable|jumper|header)\b/i,CATEGORIES[5]],[/\b(display|oled|lcd)\b/i,CATEGORIES[6]],[/\b(motor|servo|actuator|stepper)\b/i,CATEGORIES[7]]];
  return rules.find(([pattern])=>pattern.test(name))?.[1] || 'Other';
 }

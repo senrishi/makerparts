@@ -38,3 +38,12 @@
 - Made the original `dist/firefox/manifest.json` path use the Firefox 115+ compatibility manifest, so selecting the original path no longer selects an incompatible build.
 - Moved modern signing manifest to `dist/firefox-release`; packaging still uses that modern build.
 - Confirmed generated default manifest declares minimum 115.0, below Mercury 129.0.2. Full Mercury runtime behavior remains unverified.
+
+## Milestone 4 — variants, appearance, and MakerBazar shortcut
+- Added optional model/variant and SKU fields, saved and searchable in the project library. Older parts/backups remain compatible.
+- Capture reads selected Shopify variant ID, matching product JSON/offer, selected option labels, exact variant price and SKU; stores a variant-specific URL. Unknown model fields remain editable rather than inferred from a generic ESP32 name.
+- Added Light/Dark/System appearance preference shared across popup and library through persistent browser storage.
+- Added separate Resistors and Capacitors categories with automatic suggestions; retained Passive components for existing records and other passives.
+- Added a floating save button only for `makerbazar.in` and `www.makerbazar.in`. It opens the same quick-add form in a small extension window.
+- Added narrow MakerBazar host access for this requested shortcut; other stores retain user-triggered toolbar capture only.
+- Live store HTML fetch was rate limited; variant behavior is checked with representative Shopify product fixtures. Live theme-specific extraction still needs a check on the user's actual product pages.
