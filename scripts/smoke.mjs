@@ -218,12 +218,9 @@ await page
   .locator("select[name=project]")
   .selectOption({ label: "Weather station" });
 await page.getByRole("button", { name: "Save changes" }).click();
-assert.equal(
-  await page
-    .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
-    .count(),
-  0,
-);
+await page
+  .getByText("ESP32-S3 N16R8 / Type-C · SKU: S3-22", { exact: true })
+  .waitFor({ state: "hidden" });
 await page
   .locator("nav")
   .getByRole("button", { name: "Weather station", exact: true })
@@ -405,6 +402,22 @@ await context.route("https://example.com/*", (route) =>
 );
 await shop.goto("https://example.com/product");
 assert.equal(await shop.locator("#makerparts-floating").count(), 0);
+// An older open view must not be allowed to mutate the updated background.
+const stale = await page.evaluate(async () => {
+  const before = (await chrome.storage.local.get("library")).library;
+  const response = await chrome.runtime.sendMessage({
+    channel: "makerparts",
+    buildId: "stale-view",
+    action: { type: "saveCart", parts: [] },
+  });
+  const after = (await chrome.storage.local.get("library")).library;
+  return {
+    response,
+    unchanged: JSON.stringify(before) === JSON.stringify(after),
+  };
+});
+assert.match(stale.response.error, /Reload/);
+assert.equal(stale.unchanged, true);
 assert.deepEqual(errors, []);
 await context.close();
 console.log(

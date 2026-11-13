@@ -1,9 +1,4 @@
+import { BUILD_ID } from "./build-info.js";
+import { createRequest } from "./messaging.js";
 export const api = globalThis.browser || globalThis.chrome;
-export async function request(action) {
-  const result = await api.runtime.sendMessage({
-    channel: "makerparts",
-    action,
-  });
-  if (result.error) throw Error(result.error);
-  return result.state;
-}
+export const request = createRequest(api.runtime, BUILD_ID);

@@ -15,6 +15,19 @@ const styleRevision = createHash("sha256")
   .digest("hex")
   .slice(0, 12);
 const { version } = JSON.parse(await readFile("package.json", "utf8"));
+const sourceHash = createHash("sha256");
+async function fingerprint(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  for (const entry of entries) {
+    const file = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) await fingerprint(file);
+    else sourceHash.update(file).update(await readFile(file));
+  }
+}
+await fingerprint("src");
+sourceHash.update(version).update(await readFile("scripts/build.mjs"));
+const buildId = sourceHash.digest("hex").slice(0, 16);
 const base = {
   manifest_version: 3,
   name: "MakerParts",
@@ -44,6 +57,10 @@ for (const target of ["chrome", "firefox", "firefox-release"]) {
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   await cp("src", dir, { recursive: true });
+  await writeFile(
+    `${dir}/core/build-info.js`,
+    `export const BUILD_ID=${JSON.stringify(buildId)};\n`,
+  );
   await writeFile(`${dir}/styles/main.css`, stylesheet);
   for (const page of await readdir(`${dir}/pages`))
     if (page.endsWith(".html")) {

@@ -135,3 +135,9 @@
 - Authenticated Mozilla status: nominated/unreviewed, not signed, awaiting review. Listing: https://addons.mozilla.org/en-US/firefox/addon/makerparts/ ; version management: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705287 .
 - Stopped the original runner's post-submission approval wait; this does not withdraw the accepted submission. Listed releases now use approval-timeout=0 so successful submission completes without waiting for human review.
 - Verified latest official Mercury remains 129.0.2; browser-fork work is a separate future project.
+
+## Chrome stale-background cart failure (0.1.1)
+- User screenshot showed Save Cart returning Unknown action. Current cart integration passes; likely cause is an older running Chrome background module paired with newly rebuilt page files.
+- Added source-build fingerprints to the generated UI/background, preflight read checks before mutations, and server-side rejection of stale view writes. Legacy/mismatched builds now show explicit reload instructions instead of an unexplained Unknown action.
+- Added messaging tests for legacy workers, matching builds and a mid-request update. Bumped patch version to 0.1.1; the pending Mozilla 0.1.0 submission remains unchanged, with no new publication tag created.
+- Validation: 15 unit tests pass; Chromium integration passes cart saving and rejects an intentionally stale view without changing library data. Updated the move-part integration check to wait for asynchronous completion rather than assuming the click has finished the write. Strict Firefox release validation reports zero errors/notices/warnings. Rebuilt 0.1.1 browser packages.
