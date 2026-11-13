@@ -9,7 +9,9 @@ const launch = () =>
   chromium.launchPersistentContext(profile, {
     executablePath:
       process.env.CHROMIUM_PATH ||
-      "/Applications/Chromium.app/Contents/MacOS/Chromium",
+      (process.platform === "darwin"
+        ? "/Applications/Chromium.app/Contents/MacOS/Chromium"
+        : chromium.executablePath()),
     headless: true,
     ignoreDefaultArgs: ["--disable-extensions"],
     args: [

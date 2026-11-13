@@ -20,3 +20,5 @@ No runtime dependencies or server. Developer tooling is locked in `package-lock.
 Source modules and build output are described in [architecture](docs/ARCHITECTURE.md). Run `npm run format` to format source or `npm run format:check` to verify formatting. Generated browser builds and artifacts are excluded from Git.
 
 For automatic Mercury development reloads, run `npm run dev:mercury`. For Mozilla signing, versioning, and distribution choices, see [development and releases](docs/DEVELOPMENT.md). Signing runs only when explicitly invoked with credentials; no upload is performed by the development command.
+
+GitHub Actions builds every main push/PR. Version tags or the manual **Publish Firefox** workflow submit public Firefox releases after checks pass. See [GitHub release setup](docs/GITHUB_RELEASES.md) for the two required Mozilla secrets and first submission.

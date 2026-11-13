@@ -46,7 +46,7 @@ npm run sign:firefox -- --channel=listed
 
 For initial API submissions needing metadata, the script accepts `--metadata=/path/to/amo-metadata.json`. Keep the same Gecko ID to update the same extension. Do not reuse a previously submitted version. `node scripts/sign-firefox.mjs --check` validates command configuration without uploading.
 
-A CI runner can execute the same signing command using stored secrets, preferably for an explicit release/tag rather than every commit. This repository has no remote or CI provider configured, so no CI upload job has been activated.
+A CI runner can execute the same signing command using stored secrets, preferably for an explicit release/tag rather than every commit. GitHub build and tag/manual publication workflows are now configured; see [GitHub releases](GITHUB_RELEASES.md). Signing will require the two GitHub repository secrets before its first use.
 
 ## Automatic installation of unlisted updates
 For a private release to update automatically after the initial installation, choose an HTTPS host and add a stable `browser_specific_settings.gecko.update_url` pointing to its update manifest. The host serves version metadata and the corresponding Mozilla-signed XPI. Publish new metadata only after the signed XPI is available. Hosting and this update URL are not configured yet; uploading an unlisted version alone does not provide automatic installation.

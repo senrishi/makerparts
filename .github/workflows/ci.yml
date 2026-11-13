@@ -1,0 +1,37 @@
+name: Build and test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run check
+      - run: npx web-ext lint --source-dir dist/firefox-release --warnings-as-errors
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke
+      - run: npm run package
+      - run: node scripts/source-package.mjs
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: makerparts-build
+          path: |
+            artifacts/*.zip
+            artifacts/*.xpi
+            artifacts/*.png
+          retention-days: 14
+          if-no-files-found: error

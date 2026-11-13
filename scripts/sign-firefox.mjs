@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 try {
   process.loadEnvFile(".env");
@@ -42,6 +43,8 @@ await run([
   "--warnings-as-errors",
   "--no-config-discovery",
 ]);
+await run(["scripts/source-package.mjs"]);
+const { version } = JSON.parse(await readFile("package.json", "utf8"));
 const metadata = process.argv
   .find((arg) => arg.startsWith("--metadata="))
   ?.slice("--metadata=".length);
@@ -54,6 +57,8 @@ await run([
   "artifacts/signed",
   "--channel",
   channel,
+  "--upload-source-code",
+  `artifacts/makerparts-source-${version}.zip`,
   "--no-config-discovery",
   ...(metadata ? ["--amo-metadata", metadata] : []),
 ]);

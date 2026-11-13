@@ -118,3 +118,10 @@
 - Build versions and package names now follow package.json so release version bumps propagate consistently.
 - Documented private/public distribution, local temporary-install lifecycle, Firefox 140+ signing vs Mercury 129 compatibility, and the need for HTTPS update hosting for unlisted auto-updates.
 - Validation: 12 model tests pass; development configuration check finds the Mercury executable and prepares the dedicated profile/reload signal; signing check confirms configuration without uploading. Verified secrets and development data are Git-ignored. Live Mercury watcher/reload and Mozilla signing remain unexecuted; credentials are not configured.
+
+## GitHub runner publication setup
+- User approved private `senrishi/makerparts` repository and public AMO listing with Mozilla-managed updates.
+- Added push/PR build-and-test workflow and version-tag/manual Firefox publication workflow, with pinned actions, read-only GitHub permissions and release version preflight.
+- Added initial public listing metadata, All Rights Reserved license, reviewer notes and reproducible source ZIP upload.
+- Signing credentials remain in GitHub secrets; no Mozilla upload attempted. Initial publication requires the user to add AMO_JWT_ISSUER and AMO_JWT_SECRET and run Publish Firefox.
+- Made Chromium integration portable to Linux runners.
