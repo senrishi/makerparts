@@ -45,13 +45,7 @@ async function load() {
       const row = el("article", undefined, "cart-line");
       row.append(
         el("strong", part.name),
-        el(
-          "p",
-          [part.model, part.sku && `SKU: ${part.sku}`]
-            .filter(Boolean)
-            .join(" · "),
-          "muted",
-        ),
+        el("p", part.model, "muted"),
         el("p", `${part.quantity} × ${money(part.price, part.currency)}`),
       );
       form.querySelector("#cart-items").append(row);

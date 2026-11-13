@@ -107,3 +107,11 @@ html[data-theme="dark"] .app nav button.nav-home.selected {
   border-color: #b0b0b0;
   box-shadow: inset 3px 0 #ddd;
 }
+html[data-theme="dark"] .popup footer .library-shortcut {
+  background: #292929;
+  border-color: #707070;
+  color: #eee;
+}
+html[data-theme="dark"] .popup footer .library-shortcut:hover {
+  background: #393939;
+}

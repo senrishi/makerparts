@@ -308,6 +308,22 @@ await cartWindow.waitForLoadState();
 await cartWindow.getByLabel("New project name").fill("Cart build");
 await cartWindow.locator(".cart-line").first().waitFor();
 assert.equal(await cartWindow.locator(".cart-line").count(), 2);
+assert.equal(
+  await cartWindow.locator("#cart-items").getByText(/SKU:/).count(),
+  0,
+);
+assert.equal(
+  await cartWindow
+    .locator("#cart-items")
+    .getByText("1/4 W / 100 pcs", { exact: true })
+    .count(),
+  1,
+);
+assert.ok(
+  (await cartWindow
+    .locator(".library-shortcut")
+    .evaluate((link) => parseFloat(getComputedStyle(link).fontSize))) >= 15,
+);
 assert.match(await cartWindow.locator("#cart-summary").innerText(), /8 units/);
 await cartWindow.screenshot({
   path: "artifacts/cart-preview.png",

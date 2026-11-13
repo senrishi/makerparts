@@ -95,3 +95,8 @@
 - Corrected name/value spacing with separate rows and explicit gaps in home cost cards and project tiles. Build now combines modular CSS into a revisioned stylesheet to avoid stale imported styles after reload.
 - Final validation: 11 model tests pass; Chromium integration passes cart saves to new/existing projects, empty-cart handling, cost overview calculations, name/value spacing (at least 10px), Projects home navigation, and success-notice-driven auto-close for individual and cart popouts.
 - Visually inspected final matte project home and cart preview. Firefox release lint reports zero errors/notices/warnings; formatting checks pass. Browser packages regenerated. Live MakerBazar/Mercury behavior still needs user confirmation after extension and tab reloads.
+
+## Cart preview and library navigation polish
+- Removed SKU display from the Save Cart preview; variant labels remain visible, and SKUs are still preserved in saved records.
+- Promoted Open project library to a 15px, bordered, 40px-minimum-height footer link in both save views.
+- Validation: all 11 model tests and Chromium integration pass, including hidden cart SKUs, visible variant names, larger library shortcut, narrow/wide capture layouts and automatic close. Firefox release validation has zero errors/notices/warnings. Rebuilt packages.
