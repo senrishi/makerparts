@@ -46,3 +46,6 @@ The reviewer source ZIP contains only source, scripts, tests, docs, release meta
 
 ## First submission status
 MakerParts 0.1.0 was accepted into Mozilla review. Manage it at https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705287 . The public URL is https://addons.mozilla.org/en-US/firefox/addon/makerparts/ and may not be available until publication. Do not submit 0.1.0 again. Listed release runs finish after successful submission rather than waiting for review/signing; check the Developer Hub for the later review outcome.
+
+## Automatic release validation: 0.1.2
+Tag `v0.1.2` ran the complete pipeline successfully and submitted version 0.1.2 plus reviewer source without manual upload. Run: https://github.com/senrishi/makerparts/actions/runs/43482437538 . Manage this version at https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705436 . A successful runner means submission succeeded; it does not mean Mozilla has approved publication.

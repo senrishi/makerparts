@@ -156,3 +156,6 @@
 - Direct macOS file-open did not show a verifiable installer, so the helper uses a short-lived localhost URL with Firefox's XPI installer MIME type. Only the selected package is exposed under a random path; no browser profile files or signature settings are changed.
 - Browser approval can still be required. This removes manual file picking, not the browser's security approval. Added a loopback handoff test.
 - Bumped to 0.1.2 for the requested automatic tagged Mozilla release submission.
+- Verified the localhost handoff was requested by Mercury, then read only MakerParts' persisted add-on registry entry: version 0.1.2, active=true, location=app-profile (permanent installation).
+- Started watch:mercury-updates for the current session; future local package outputs will be offered automatically while the process remains running. Browser approval may still be required on future updates.
+- Tag v0.1.2 successfully triggered the full automatic publication pipeline: https://github.com/senrishi/makerparts/actions/runs/43482437538 . Tests/build/lint/integration passed and Mozilla accepted the new version plus source archive. Review URL: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6705436 . Publication/signing remain subject to Mozilla review.
