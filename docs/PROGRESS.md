@@ -51,3 +51,11 @@
 - Added a read-only same-origin Shopify product JSON fallback on MakerBazar when selected variant metadata is absent from the HTML.
 - User requested Robu/Amazon/other electronics store enhancements later; recorded as deferred scope, with MakerBazar the current focus.
 - Final validation: 7 domain tests pass; Chromium integration passes including both embedded and fetched variant metadata; dark library visually inspected; Firefox release manifest validation reports zero errors/notices/warnings. Compatibility manifest has the expected missing modern data-consent warning for local Mercury use.
+
+## Compact save UI and dedicated settings
+- Reduced save form/header spacing and kept name, model/variant, project, category, price, currency and quantity in the main view.
+- Moved link, SKU, notes and status into expandable details; opens automatically for manual link entry and invalid hidden required fields.
+- Kept Save fixed within the form while its fields scroll; reduced the floating capture window height.
+- Moved appearance controls into a dedicated Settings tab, opened through an accessible gear icon. Removed the popup tagline and instruction line as requested.
+- Model/variant name remains visible before saving; SKU/part number is stored separately.
+- Validation: 7 domain tests and Chromium integration pass; Save stays within a 560px viewport with details both collapsed and expanded. Visually verified compact dark popup. Settings preference persists across reload and applies to library/capture. Release Firefox validation has zero errors/notices/warnings.
