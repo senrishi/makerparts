@@ -1,5 +1,5 @@
 // Self-contained so scripting.executeScript can serialize this function.
-export function captureProduct() {
+export async function captureProduct() {
  const meta=(...keys)=>{for(const key of keys){const el=document.querySelector(`meta[property="${key}"],meta[name="${key}"]`);if(el?.content)return el.content;}return '';};
  let product;
  const find=x=>{if(!x || typeof x!=='object')return;if([].concat(x['@type']||[]).includes('Product'))product ||= x;if(Array.isArray(x))x.forEach(find);else if(x['@graph'])find(x['@graph']);};
@@ -11,6 +11,11 @@ export function captureProduct() {
  // Shopify themes expose product JSON either directly or inside a product wrapper.
  for(const script of document.querySelectorAll('script[type="application/json"],script[data-product-json]')){
   try{const data=JSON.parse(script.textContent);const products=[data,data.product,...(Array.isArray(data)?data:[])];for(const p of products){if(!p?.variants)continue;variant ||= p.variants.find(v=>String(v.id)===String(selectedId));}}catch{}
+ }
+ // Shopify's public product endpoint covers themes that omit embedded variant JSON.
+ if(!variant && selectedId && ['makerbazar.in','www.makerbazar.in'].includes(location.hostname)){
+  const match=location.pathname.match(/\/products\/([^/]+)/);
+  if(match)try{const response=await fetch(`/products/${match[1]}.js`,{credentials:'omit',signal:AbortSignal.timeout(4000)});if(response.ok){const data=await response.json();variant=data.variants?.find(v=>String(v.id)===String(selectedId));}}catch{}
  }
  const selections=[];
  const scope=form?.closest('product-info,product-section,.product,.product-detail,.product-detail-section') || document;

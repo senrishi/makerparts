@@ -47,3 +47,7 @@
 - Added a floating save button only for `makerbazar.in` and `www.makerbazar.in`. It opens the same quick-add form in a small extension window.
 - Added narrow MakerBazar host access for this requested shortcut; other stores retain user-triggered toolbar capture only.
 - Live store HTML fetch was rate limited; variant behavior is checked with representative Shopify product fixtures. Live theme-specific extraction still needs a check on the user's actual product pages.
+- Chromium integration checks passed for dark theme persistence, MakerBazar-only floating button, and selected variant model/SKU/price/link captured and saved.
+- Added a read-only same-origin Shopify product JSON fallback on MakerBazar when selected variant metadata is absent from the HTML.
+- User requested Robu/Amazon/other electronics store enhancements later; recorded as deferred scope, with MakerBazar the current focus.
+- Final validation: 7 domain tests pass; Chromium integration passes including both embedded and fetched variant metadata; dark library visually inspected; Firefox release manifest validation reports zero errors/notices/warnings. Compatibility manifest has the expected missing modern data-consent warning for local Mercury use.

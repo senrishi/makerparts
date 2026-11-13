@@ -26,5 +26,10 @@ assert.equal(await capture.locator('[name=price]').inputValue(),'599');
 assert.match(await capture.locator('[name=url]').inputValue(),/variant=22/);
 await capture.getByRole('button',{name:'Save part',exact:true}).click();await capture.getByRole('status').filter({hasText:'Saved'}).waitFor();
 await page.reload();await page.getByText('ESP32-S3 N16R8 / Type-C · SKU: S3-22',{exact:true}).waitFor();
+// Exercise the MakerBazar public JSON fallback when a theme omits embedded product JSON.
+await context.route('https://makerbazar.in/products/test-board.js',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({variants:[{id:11,title:'ESP32 WROOM / Micro-USB',sku:'WROOM-11',price:30000}]})}));
+await shop.evaluate(()=>document.querySelector('script[type="application/json"]').remove());await shop.locator('select').selectOption('11');
+const fallbackWindow=context.waitForEvent('page');await shop.locator('#makerparts-floating').click();const fallback=await fallbackWindow;await fallback.waitForLoadState();
+await fallback.locator('[name=model]').waitFor();assert.equal(await fallback.locator('[name=model]').inputValue(),'ESP32 WROOM / Micro-USB');assert.equal(await fallback.locator('[name=price]').inputValue(),'300');await fallback.close();
 await context.route('https://example.com/*',route=>route.fulfill({contentType:'text/html',body:'<h1>Other store</h1>'}));await shop.goto('https://example.com/product');assert.equal(await shop.locator('#makerparts-floating').count(),0);
 assert.deepEqual(errors,[]);await context.close();console.log('PASS: Chromium create/save/edit, totals, full browser restart persistence, popup save, dark theme persistence, selected variant price/SKU/link, MakerBazar-only floating capture.');

@@ -25,8 +25,15 @@ For development only: open `about:debugging#/runtime/this-firefox`, click **Load
 - Prices are per unit; totals multiply by quantity and remain separate for each currency. Missing prices are called out.
 - Export a JSON backup periodically. Import **replaces** the current library after confirmation. Chrome and Firefox libraries are separate; use export/import to transfer.
 
+## Variants and appearance
+- The form includes editable **Model / selected variant** and **SKU / part number** fields. On MakerBazar, choose the desired variant on the product page before saving. Capture uses the selected variant ID, its price, SKU and variant-specific link when the page provides them; it does not guess an exact board revision from a generic family name.
+- MakerBazar product JSON is read from the page, or its public same-origin Shopify product endpoint if needed. Prices and variant labels still need review, especially if a store's theme changes.
+- The floating **Save to MakerParts** button appears only on `makerbazar.in` / `www.makerbazar.in`. It opens quick-add in a small window. Refresh an already-open store page after reloading the extension.
+- Choose **Dark mode**, **Light mode** or **System theme** from the appearance menu in the popup or library. The preference is shared and persists across restarts.
+- **Resistors** and **Capacitors** have separate categories. Existing Passive components records keep their category; edit them to recategorize.
+
 ## Privacy and storage
-No server, telemetry, remote scripts or automatic shopping actions. Product capture uses temporary access granted by your toolbar click. Parts are stored in `storage.local` in the current browser profile. Closing the browser preserves them; uninstalling the extension or deleting the profile can remove them.
+No server, telemetry, remote scripts or automatic shopping actions. MakerBazar alone has persistent site access for the floating save button and selected-variant capture; other sites use temporary access granted by your toolbar click. Parts are stored in `storage.local` in the current browser profile. Closing the browser preserves them; uninstalling the extension or deleting the profile can remove them.
 
 ## References
 - [Firefox temporary installation](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)
