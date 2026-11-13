@@ -106,3 +106,8 @@
 - Toolbar popup now checks the active tab first and routes MakerBazar cart pages to Save Cart, preserving toolbar-safe sizing. Floating captures continue using responsive window sizing.
 - Added site/cart routing tests and a browser integration check that opens the toolbar entry while the cart tab is active and verifies the cart preview.
 - Validation: 12 domain tests and Chromium integration pass, including toolbar cart routing and absence of removed footer text.
+
+## Mercury permanent-install handoff
+- Prepared an unsigned Mercury-compatible XPI from `dist/firefox`, separate from the Firefox 140+ signing package.
+- Documented normal Add-ons Manager installation and the signature preference used by builds permitting unsigned extensions, with a library export/import step before replacing a temporary install.
+- Reviewed Mercury source signing configuration; macOS binary enforcement and restart persistence for a permanent install remain to be verified by the user.

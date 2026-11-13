@@ -10,3 +10,9 @@ for (const browser of ["chrome", "firefox"]) {
   });
   console.log(dest);
 }
+
+// Compatibility package for local Mercury installs; intentionally unsigned.
+const mercury = path.resolve("artifacts/makerparts-mercury-0.1.0.xpi");
+await rm(mercury, { force: true });
+execFileSync("zip", ["-r", "-q", mercury, "."], { cwd: "dist/firefox" });
+console.log(mercury);

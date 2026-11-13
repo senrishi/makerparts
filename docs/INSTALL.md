@@ -51,3 +51,10 @@ On MakerBazar's cart page, the floating button changes to **Save Cart**. Click i
 Home estimates use listed unit prices × quantities. **Still to buy** covers planned parts; **Already spent** covers ordered and received parts; **Total parts value** covers all saved parts including Miscellaneous. Currencies remain separate and missing prices are flagged. Shipping and checkout-only adjustments are not estimated.
 
 After a successful individual or cart save, the popout shows **Saved successfully** and closes after 1.4 seconds. Errors stay open for correction. After updating this development build, reload the extension in `about:debugging` / `chrome://extensions`, then refresh both your library and MakerBazar tabs so their code and styles match.
+
+## Mercury local permanent installation
+`npm run package` also generates `artifacts/makerparts-mercury-0.1.0.xpi` from the Firefox 115+ compatibility build. This file is unsigned; it is distinct from the Firefox 140+ release/signing ZIP.
+
+Export your library before replacing the temporary installation. In Mercury, try setting `xpinstall.signatures.required` to `false` in `about:config`, then remove the temporary add-on and install the XPI through `about:addons` → gear menu → Install Add-on From File. Import the exported library if necessary. This allows unsigned add-ons browser-wide in builds that honor the preference. Mercury's source build configuration disables mandatory signing, but this particular macOS binary's enforcement has not been verified. If it rejects the package as unsigned/corrupt, a compatible signed build or a build permitting unsigned extensions is needed; the temporary loader will still not persist across restarts.
+
+Source: [Mercury build configuration](https://github.com/Alex313031/Mercury/blob/main/mozconfigs/mozconfig), [Mozilla signing behavior](https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox).
