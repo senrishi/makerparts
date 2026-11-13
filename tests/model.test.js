@@ -1,11 +1,100 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {emptyState,mutate,validateState,totals} from '../src/model.js';
-const part={name:'ESP32',url:'https://example.com/esp32',category:'Microcontrollers & boards',price:450,currency:'INR',quantity:2,status:'planned',notes:''};
-test('create a project while saving, update, total, and cascade delete',()=>{let s=mutate(emptyState(),{type:'save',newProject:'Weather station',part});assert.equal(s.parts[0].projectId,s.projects[0].id);assert.deepEqual(totals(s.parts),{INR:900});s=mutate(s,{type:'save',part:{...s.parts[0],quantity:3}});assert.equal(s.parts.length,1);assert.deepEqual(totals(s.parts),{INR:1350});s=mutate(s,{type:'deleteProject',id:s.projects[0].id});assert.equal(s.parts.length,0);});
-test('currencies stay separate and unknown prices do not become zero quotes',()=>assert.deepEqual(totals([{...part},{...part,currency:'USD',price:5},{...part,price:null}]),{INR:900,USD:10}));
-test('reject dangerous URLs, malformed imports, duplicate IDs and orphan parts',()=>{assert.throws(()=>mutate(emptyState(),{type:'save',newProject:'X',part:{...part,url:'javascript:alert(1)'}}));const s=mutate(emptyState(),{type:'save',newProject:'X',part});for(const bad of [{...s,parts:[...s.parts,...s.parts]},{...s,projects:[]},{...s,parts:[{...s.parts[0],quantity:0}]},{...s,parts:[{...s.parts[0],price:-1}]}])assert.throws(()=>validateState(bad));});
-test('backup round trip and failed mutations leave original untouched',()=>{const s=mutate(emptyState(),{type:'save',newProject:'X',part});assert.deepEqual(mutate(emptyState(),{type:'import',state:JSON.parse(JSON.stringify(s))}),s);assert.throws(()=>mutate(s,{type:'project',name:'x'}));assert.equal(s.projects.length,1);});
-test('suggest common electronics categories without forcing a guess',async()=>{const {suggestCategory}=await import('../src/model.js');assert.equal(suggestCategory('ESP32 development board'),'Microcontrollers & boards');assert.equal(suggestCategory('10k resistor pack'),'Resistors');assert.equal(suggestCategory('Unusual widget'),'Other');});
-test('model and SKU survive backup round trip; older records still validate',()=>{const s=mutate(emptyState(),{type:'save',newProject:'Variants',part:{...part,model:'ESP32-S3 N16R8 / Type-C',sku:'S3-22'}});assert.equal(validateState(JSON.parse(JSON.stringify(s))).parts[0].model,'ESP32-S3 N16R8 / Type-C');assert.equal(validateState(JSON.parse(JSON.stringify(s))).parts[0].sku,'S3-22');const old=mutate(emptyState(),{type:'save',newProject:'Old',part});assert.equal(validateState(old).parts[0].model,undefined);});
-test('capacitors have a dedicated suggestion',async()=>{const {suggestCategory}=await import('../src/model.js');assert.equal(suggestCategory('100uF electrolytic capacitor'),'Capacitors');});
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  emptyState,
+  mutate,
+  validateState,
+  totals,
+} from "../src/core/model.js";
+const part = {
+  name: "ESP32",
+  url: "https://example.com/esp32",
+  category: "Microcontrollers & boards",
+  price: 450,
+  currency: "INR",
+  quantity: 2,
+  status: "planned",
+  notes: "",
+};
+test("create a project while saving, update, total, and cascade delete", () => {
+  let s = mutate(emptyState(), {
+    type: "save",
+    newProject: "Weather station",
+    part,
+  });
+  assert.equal(s.parts[0].projectId, s.projects[0].id);
+  assert.deepEqual(totals(s.parts), { INR: 900 });
+  s = mutate(s, { type: "save", part: { ...s.parts[0], quantity: 3 } });
+  assert.equal(s.parts.length, 1);
+  assert.deepEqual(totals(s.parts), { INR: 1350 });
+  s = mutate(s, { type: "deleteProject", id: s.projects[0].id });
+  assert.equal(s.parts.length, 0);
+});
+test("currencies stay separate and unknown prices do not become zero quotes", () =>
+  assert.deepEqual(
+    totals([
+      { ...part },
+      { ...part, currency: "USD", price: 5 },
+      { ...part, price: null },
+    ]),
+    { INR: 900, USD: 10 },
+  ));
+test("reject dangerous URLs, malformed imports, duplicate IDs and orphan parts", () => {
+  assert.throws(() =>
+    mutate(emptyState(), {
+      type: "save",
+      newProject: "X",
+      part: { ...part, url: "javascript:alert(1)" },
+    }),
+  );
+  const s = mutate(emptyState(), { type: "save", newProject: "X", part });
+  for (const bad of [
+    { ...s, parts: [...s.parts, ...s.parts] },
+    { ...s, projects: [] },
+    { ...s, parts: [{ ...s.parts[0], quantity: 0 }] },
+    { ...s, parts: [{ ...s.parts[0], price: -1 }] },
+  ])
+    assert.throws(() => validateState(bad));
+});
+test("backup round trip and failed mutations leave original untouched", () => {
+  const s = mutate(emptyState(), { type: "save", newProject: "X", part });
+  assert.deepEqual(
+    mutate(emptyState(), {
+      type: "import",
+      state: JSON.parse(JSON.stringify(s)),
+    }),
+    s,
+  );
+  assert.throws(() => mutate(s, { type: "project", name: "x" }));
+  assert.equal(s.projects.length, 1);
+});
+test("suggest common electronics categories without forcing a guess", async () => {
+  const { suggestCategory } = await import("../src/core/model.js");
+  assert.equal(
+    suggestCategory("ESP32 development board"),
+    "Microcontrollers & boards",
+  );
+  assert.equal(suggestCategory("10k resistor pack"), "Resistors");
+  assert.equal(suggestCategory("Unusual widget"), "Other");
+});
+test("model and SKU survive backup round trip; older records still validate", () => {
+  const s = mutate(emptyState(), {
+    type: "save",
+    newProject: "Variants",
+    part: { ...part, model: "ESP32-S3 N16R8 / Type-C", sku: "S3-22" },
+  });
+  assert.equal(
+    validateState(JSON.parse(JSON.stringify(s))).parts[0].model,
+    "ESP32-S3 N16R8 / Type-C",
+  );
+  assert.equal(
+    validateState(JSON.parse(JSON.stringify(s))).parts[0].sku,
+    "S3-22",
+  );
+  const old = mutate(emptyState(), { type: "save", newProject: "Old", part });
+  assert.equal(validateState(old).parts[0].model, undefined);
+});
+test("capacitors have a dedicated suggestion", async () => {
+  const { suggestCategory } = await import("../src/core/model.js");
+  assert.equal(suggestCategory("100uF electrolytic capacitor"), "Capacitors");
+});

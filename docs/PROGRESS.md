@@ -59,3 +59,11 @@
 - Moved appearance controls into a dedicated Settings tab, opened through an accessible gear icon. Removed the popup tagline and instruction line as requested.
 - Model/variant name remains visible before saving; SKU/part number is stored separately.
 - Validation: 7 domain tests and Chromium integration pass; Save stays within a 560px viewport with details both collapsed and expanded. Visually verified compact dark popup. Settings preference persists across reload and applies to library/capture. Release Firefox validation has zero errors/notices/warnings.
+
+## Popup visibility fix and module cleanup
+- Screenshot shows toolbar popup failing to open in Mercury. Removed circular viewport-dependent popup size constraints and set intrinsic 460 × 560 dimensions; this addresses a likely auto-sizing cause, pending Mercury confirmation.
+- Mounted the form before metadata extraction finishes and preserved in-progress edits when asynchronous capture completes.
+- Organized source into pages, components, core, background, capture, content, settings, styles and assets. Extracted shared form/list rendering, storage queue, messaging and formatting.
+- Split stylesheet into functional modules and formatted source for maintainability.
+- Removed the redundant generated Firefox legacy alias; original `dist/firefox/manifest.json` path remains the Mercury development entry point.
+- Packaging now recreates ZIPs so obsolete files are removed after source moves.

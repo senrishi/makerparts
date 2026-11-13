@@ -16,3 +16,5 @@ See [project details](docs/PROJECT.md) and [progress](docs/PROGRESS.md).
 - `npm run package` — unsigned Chrome/Firefox ZIPs in `artifacts/`.
 
 No runtime dependencies or server. Developer tooling is locked in `package-lock.json`. The Firefox ZIP must be Mozilla-signed before permanent installation in standard Firefox.
+
+Source modules and build output are described in [architecture](docs/ARCHITECTURE.md). Run `npm run format` to format source or `npm run format:check` to verify formatting. Generated browser builds and artifacts are excluded from Git.

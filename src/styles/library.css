@@ -1,0 +1,251 @@
+.app {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+}
+aside {
+  border-right: 1px solid #dfe5d6;
+  padding: 30px 22px;
+  background: #eef2e7;
+  display: flex;
+  flex-direction: column;
+}
+aside > .primary {
+  margin: 26px 0 20px;
+}
+nav {
+  display: grid;
+  gap: 6px;
+}
+nav button {
+  text-align: left;
+  border: 0;
+  background: transparent;
+  overflow-wrap: anywhere;
+}
+nav button.selected {
+  background: #dce7cd;
+  font-weight: 700;
+}
+.backup {
+  margin-top: auto;
+  padding-top: 65px;
+}
+.backup button,
+.backup .file-button {
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+.library {
+  padding: 40px 44px;
+  max-width: 1500px;
+  width: 100%;
+  margin: auto;
+  align-self: start;
+}
+.library-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.library-header h1 {
+  overflow-wrap: anywhere;
+}
+.totals {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 25px 0;
+}
+.total {
+  background: #eaf0df;
+  border: 1px solid #dce5cb;
+  border-radius: 12px;
+  padding: 17px 23px;
+  min-width: 190px;
+}
+.total span,
+.total strong {
+  display: block;
+}
+.total strong {
+  font-size: 25px;
+  margin-top: 5px;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 25px 0;
+}
+.toolbar input {
+  flex: 2;
+  min-width: 200px;
+}
+.toolbar select {
+  flex: 1;
+  min-width: 150px;
+}
+.toolbar button {
+  font-size: 12px;
+}
+.category-heading {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  margin: 27px 0 12px;
+  color: #718074;
+}
+.part-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: white;
+  border: 1px solid #e0e6d9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+.part-info {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.part-name {
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 16px;
+}
+.part-name:hover {
+  text-decoration: underline;
+}
+.part-info p {
+  margin: 5px 0;
+}
+.notes {
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.part-price {
+  text-align: right;
+  white-space: nowrap;
+}
+.part-price small {
+  display: block;
+  color: #718074;
+}
+.status {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f1eee3;
+  text-transform: capitalize;
+}
+.received {
+  background: #e4efda;
+  color: #396338;
+}
+.ordered {
+  background: #e3edf5;
+  color: #365e80;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.actions button {
+  font-size: 12px;
+}
+.empty {
+  padding: 65px 20px;
+  text-align: center;
+  border: 1px dashed #ccd7bf;
+  border-radius: 14px;
+  margin-top: 30px;
+}
+.empty p {
+  max-width: 400px;
+  margin: 10px auto 25px;
+}
+.empty-icon {
+  font-size: 48px;
+  color: #71894c;
+}
+dialog {
+  border: 1px solid #dce3d4;
+  border-radius: 16px;
+  width: 510px;
+  max-width: calc(100vw - 30px);
+  padding: 26px;
+  background: #fafbf7;
+  max-height: 92vh;
+  overflow: auto;
+  box-shadow: 0 25px 100px #20382f30;
+}
+dialog::backdrop {
+  background: #20382f70;
+}
+.dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.dialog-heading h2 {
+  margin: 0;
+}
+#project-form .actions {
+  justify-content: flex-end;
+}
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 200px 1fr;
+  }
+  .library {
+    padding: 25px;
+  }
+  .part-card {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .part-info {
+    flex-basis: 60%;
+  }
+}
+@media (max-width: 600px) {
+  .app {
+    display: block;
+  }
+  aside {
+    padding: 20px;
+    border-right: 0;
+  }
+  aside nav {
+    max-height: 180px;
+    overflow: auto;
+  }
+  .backup {
+    padding-top: 20px;
+  }
+  .library {
+    padding: 20px;
+  }
+  .library-header {
+    align-items: flex-start;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  .part-card .actions {
+    margin-left: auto;
+  }
+}
+.model-detail {
+  font-size: 13px;
+  font-weight: 600;
+  color: #49674c;
+}
