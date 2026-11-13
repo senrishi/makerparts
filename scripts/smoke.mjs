@@ -301,6 +301,19 @@ assert.equal(
   await shop.locator("#makerparts-floating").getAttribute("aria-label"),
   "Save Cart",
 );
+// Toolbar action uses the same cart flow, while retaining toolbar-safe sizing.
+const toolbarCart = await context.newPage();
+await shop.bringToFront();
+await toolbarCart.goto(`chrome-extension://${id}/pages/popup.html`);
+await toolbarCart.waitForURL(/pages\/cart\.html\?.*view=toolbar/);
+await toolbarCart.locator(".cart-line").first().waitFor();
+assert.equal(await toolbarCart.locator(".cart-line").count(), 2);
+assert.equal(await toolbarCart.locator("html").getAttribute("class"), null);
+assert.equal(
+  await toolbarCart.getByText("Stored on this device", { exact: true }).count(),
+  0,
+);
+await toolbarCart.close();
 let cartWindowPromise = context.waitForEvent("page");
 await shop.locator("#makerparts-floating").click();
 let cartWindow = await cartWindowPromise;
@@ -322,7 +335,7 @@ assert.equal(
 assert.ok(
   (await cartWindow
     .locator(".library-shortcut")
-    .evaluate((link) => parseFloat(getComputedStyle(link).fontSize))) >= 15,
+    .evaluate((link) => parseFloat(getComputedStyle(link).fontSize))) >= 13,
 );
 assert.match(await cartWindow.locator("#cart-summary").innerText(), /8 units/);
 await cartWindow.screenshot({

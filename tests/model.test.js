@@ -178,3 +178,20 @@ test("cost estimates split planned from purchased and retain currencies", async 
     },
   );
 });
+test("cart routing is restricted to MakerBazar cart pages", async () => {
+  const { isMakerCart } = await import("../src/core/sites.js");
+  for (const url of [
+    "https://makerbazar.in/cart",
+    "https://www.makerbazar.in/cart/?x=1",
+    "https://makerbazar.in/en/cart",
+  ])
+    assert.equal(isMakerCart(url), true);
+  for (const url of [
+    "https://example.com/cart",
+    "https://makerbazar.in/products/cart",
+    "https://makerbazar.in/cart.js",
+    "https://makerbazar.in/cart/add",
+    "invalid",
+  ])
+    assert.equal(isMakerCart(url), false);
+});

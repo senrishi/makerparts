@@ -100,3 +100,9 @@
 - Removed SKU display from the Save Cart preview; variant labels remain visible, and SKUs are still preserved in saved records.
 - Promoted Open project library to a 15px, bordered, 40px-minimum-height footer link in both save views.
 - Validation: all 11 model tests and Chromium integration pass, including hidden cart SKUs, visible variant names, larger library shortcut, narrow/wide capture layouts and automatic close. Firefox release validation has zero errors/notices/warnings. Rebuilt packages.
+
+## Compact footer and toolbar cart routing
+- Reduced Open project library to a 13px text link with no large button background; removed Stored on this device from both popouts.
+- Toolbar popup now checks the active tab first and routes MakerBazar cart pages to Save Cart, preserving toolbar-safe sizing. Floating captures continue using responsive window sizing.
+- Added site/cart routing tests and a browser integration check that opens the toolbar entry while the cart tab is active and verifies the cart preview.
+- Validation: 12 domain tests and Chromium integration pass, including toolbar cart routing and absence of removed footer text.
