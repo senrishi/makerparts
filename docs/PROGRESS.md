@@ -201,4 +201,13 @@
 
 - Added a project-view split copy control: the main button copies a readable parts list with product links, and its arrow menu offers copies with or without links.
 - The text includes model, category, quantity, unit price and notes when present. It intentionally leaves out purchase status (including Planned).
+- Copied parts are grouped beneath underlined category headings in the extension's category order.
 - Copying uses the browser clipboard and reports success or permission errors in the library.
+
+## Firefox 0.1.4 and refreshed browser packages
+
+- Rebuilt all browser packages after the copy control was added. The 0.1.3 XPI had been generated before that change, so reinstalling it could not show the new feature.
+- Bumped the package version to 0.1.4 so Firefox/Mercury can recognize it as an update. The compatibility XPI is for Firefox 115+ (including Mercury 129); the AMO release build still targets Firefox 140+.
+- Fixed a stray `>` in the generated Chrome library HTML. It came from stale generated files; rebuilding from the corrected source removes it.
+- Mozilla's 0.1.3 submission was accepted by the automated upload workflow and awaits Mozilla approval. A successful upload does not update an installed add-on before Mozilla approves and signs the version.
+- Created 0.1.4 packages with the fix and category-grouped copy format. The Mercury-compatible XPI declares Firefox 115+; Chrome and Firefox packages use the same updated source.

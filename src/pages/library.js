@@ -137,16 +137,20 @@ function projectText(withLinks = true) {
   const name = project?.name || "Miscellaneous";
   const parts = state.parts.filter((part) => part.projectId === selected);
   const lines = [name, ""];
-  for (const part of parts) {
-    lines.push(`• ${part.name}`);
-    if (part.model) lines.push(`  Model: ${part.model}`);
-    lines.push(`  Category: ${part.category}`);
-    lines.push(`  Quantity: ${part.quantity}`);
-    lines.push(
-      `  Unit price: ${part.price === null ? "Unknown" : money(part.price, part.currency)}`,
-    );
-    if (part.notes) lines.push(`  Notes: ${part.notes}`);
-    if (withLinks) lines.push(`  Link: ${part.url}`);
+  for (const category of CATEGORIES) {
+    const group = parts.filter((part) => part.category === category);
+    if (!group.length) continue;
+    lines.push(category, "=".repeat(category.length));
+    for (const part of group) {
+      lines.push(`• ${part.name}`);
+      if (part.model) lines.push(`  Model: ${part.model}`);
+      lines.push(`  Quantity: ${part.quantity}`);
+      lines.push(
+        `  Unit price: ${part.price === null ? "Unknown" : money(part.price, part.currency)}`,
+      );
+      if (part.notes) lines.push(`  Notes: ${part.notes}`);
+      if (withLinks) lines.push(`  Link: ${part.url}`);
+    }
     lines.push("");
   }
   return lines.join("\n").trim();
