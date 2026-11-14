@@ -55,6 +55,56 @@ nav button.selected {
 .library-header h1 {
   overflow-wrap: anywhere;
 }
+.copy-menu {
+  display: flex;
+  position: relative;
+  gap: 0;
+}
+.copy-menu > button {
+  border-radius: 8px 0 0 8px;
+}
+.copy-menu details {
+  position: relative;
+}
+.copy-menu summary {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-width: 38px;
+  padding: 0 9px;
+  border: 1px solid #d6d6d6;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #fff;
+  cursor: pointer;
+  list-style: none;
+}
+.copy-menu summary::-webkit-details-marker {
+  display: none;
+}
+.copy-menu summary:hover {
+  background: #ededed;
+}
+.copy-options {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  min-width: 175px;
+  gap: 5px;
+  padding: 6px;
+  border: 1px solid #d6d6d6;
+  border-radius: 9px;
+  background: #fafafa;
+  box-shadow: 0 8px 24px #0002;
+}
+.copy-options button {
+  text-align: left;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+}
 .totals {
   display: flex;
   gap: 14px;

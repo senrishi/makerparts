@@ -31,8 +31,27 @@
             <p id="summary" class="muted"></p>
           </div>
           <div class="actions">
-            <button id="restore-project" hidden>Restore project</button
-            ><button id="add-part" class="primary">＋ Add a part</button>
+            <button id="restore-project" hidden>Restore project</button>
+            <div id="copy-menu" class="copy-menu" hidden>
+              <button id="copy-project">Copy with links</button>
+              <details>
+                <summary
+                  aria-label="Choose copy format"
+                  title="Choose copy format"
+                >
+                  ▾
+                </summary>
+                <div class="copy-options">
+                  <button type="button" data-copy-links="true">
+                    Copy with links
+                  </button>
+                  <button type="button" data-copy-links="false">
+                    Copy without links
+                  </button>
+                </div>
+              </details>
+            </div>
+            <button id="add-part" class="primary">＋ Add a part</button>
           </div>
         </header>
         <div id="cost-overview"></div>

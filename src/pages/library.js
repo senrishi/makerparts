@@ -75,6 +75,7 @@ function render() {
   $("#totals").hidden = home;
   $("#cost-overview").hidden = !home;
   $("#part-toolbar").hidden = home;
+  $("#copy-menu").hidden = home;
   if (home) {
     $("#summary").textContent = "";
     renderCostOverview($("#cost-overview"), state.parts);
@@ -131,6 +132,45 @@ function render() {
     },
   });
 }
+function projectText(withLinks = true) {
+  const project = state.projects.find((item) => item.id === selected);
+  const name = project?.name || "Miscellaneous";
+  const parts = state.parts.filter((part) => part.projectId === selected);
+  const lines = [name, ""];
+  for (const part of parts) {
+    lines.push(`• ${part.name}`);
+    if (part.model) lines.push(`  Model: ${part.model}`);
+    lines.push(`  Category: ${part.category}`);
+    lines.push(`  Quantity: ${part.quantity}`);
+    lines.push(
+      `  Unit price: ${part.price === null ? "Unknown" : money(part.price, part.currency)}`,
+    );
+    if (part.notes) lines.push(`  Notes: ${part.notes}`);
+    if (withLinks) lines.push(`  Link: ${part.url}`);
+    lines.push("");
+  }
+  return lines.join("\n").trim();
+}
+async function copyProject(withLinks = true) {
+  const parts = state.parts.filter((part) => part.projectId === selected);
+  if (!parts.length) {
+    message("There are no parts in this list to copy.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(projectText(withLinks));
+    $("#copy-menu details").open = false;
+    message(
+      withLinks
+        ? "Project copied with links."
+        : "Project copied without links.",
+    );
+  } catch {
+    message(
+      "Could not copy to clipboard. Check browser clipboard permissions.",
+    );
+  }
+}
 $("#restore-project").onclick = () =>
   api.windows.create({
     url: api.runtime.getURL(
@@ -140,6 +180,9 @@ $("#restore-project").onclick = () =>
     width: 540,
     height: 700,
   });
+$("#copy-project").onclick = () => copyProject(true);
+$("#copy-menu [data-copy-links='true']").onclick = () => copyProject(true);
+$("#copy-menu [data-copy-links='false']").onclick = () => copyProject(false);
 $("#add-part").onclick = () => edit();
 $("#close-editor").onclick = () => $("#editor").close();
 for (const id of ["#search", "#category-filter", "#status-filter"])

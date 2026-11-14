@@ -94,6 +94,11 @@ html[data-theme="dark"] .cost-card {
   background: #202020;
   border-color: #383838;
 }
+html[data-theme="dark"] .copy-menu summary,
+html[data-theme="dark"] .copy-options {
+  background: #242424;
+  border-color: #424242;
+}
 html[data-theme="dark"] .cost-label,
 html[data-theme="dark"] .project-unpriced {
   color: #ababab;
