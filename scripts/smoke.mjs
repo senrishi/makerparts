@@ -52,7 +52,7 @@ await page.getByRole("button", { name: "Save part", exact: true }).click();
 await page.getByRole("link", { name: "ESP32 board" }).waitFor();
 assert.match(await page.locator("#totals").innerText(), /900/);
 await page.getByRole("button", { name: "Edit", exact: true }).click();
-await page.locator("summary").click();
+await page.locator("#editor .extra-details summary").click();
 await page.locator("select[name=status]").selectOption("received");
 await page.getByRole("button", { name: "Save changes" }).click();
 await page.locator(".status.received").waitFor();
