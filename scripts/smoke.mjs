@@ -484,7 +484,7 @@ const capacitor = page
   .locator(".part-card")
   .filter({ hasText: "Ceramic capacitor" });
 await capacitor.getByRole("button", { name: "Edit", exact: true }).click();
-await page.locator("summary").click();
+await page.locator("#editor .extra-details summary").click();
 await page.locator("select[name=status]").selectOption("ordered");
 await page.getByRole("button", { name: "Save changes" }).click();
 await capacitor.locator(".status.ordered").waitFor();
