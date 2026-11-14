@@ -211,3 +211,4 @@
 - Fixed a stray `>` in the generated Chrome library HTML. It came from stale generated files; rebuilding from the corrected source removes it.
 - Mozilla's 0.1.3 submission was accepted by the automated upload workflow and awaits Mozilla approval. A successful upload does not update an installed add-on before Mozilla approves and signs the version.
 - Created 0.1.4 packages with the fix and category-grouped copy format. The Mercury-compatible XPI declares Firefox 115+; Chrome and Firefox packages use the same updated source.
+- GitHub release checks passed and Mozilla accepted 0.1.4 for review: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6707741 . It awaits Mozilla approval/signing.
