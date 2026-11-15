@@ -1,70 +1,30 @@
-# Installing MakerParts
+# Install MakerParts
 
-## Chrome — persists across restarts
-1. Run `npm install` then `npm run build` in this repository.
-2. Open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and choose this repository's `dist/chrome` folder.
-3. Pin MakerParts in the extensions menu. Click it on a product page, review the fields and save.
-4. Keep that folder in place. The installation and saved library remain across normal browser restarts. After rebuilding, click Reload on the extension card.
+## Chrome
 
-## Firefox — permanent installation
-Regular Firefox requires a **Mozilla-signed XPI**. A temporary add-on from `about:debugging` is deliberately removed on browser restart; changing our code cannot override that browser rule.
+1. Download the latest `makerparts-chrome-<version>.zip` from the `makerparts-build` artifact attached to a successful [Build and test run](https://github.com/senrishi/makerparts/actions/workflows/ci.yml).
+2. Extract the ZIP into a folder that you will keep in place.
+3. Open `chrome://extensions`, turn on **Developer mode**, choose **Load unpacked**, and select the extracted folder.
+4. Pin MakerParts from Chrome’s Extensions menu for quick access.
 
-1. Run `npm run build` and `npm run package`.
-2. Sign `artifacts/makerparts-firefox-0.1.0.zip` using a Mozilla Add-ons developer account at https://addons.mozilla.org/developers/ . Choose **On your own** distribution for a private/unlisted extension. Upload this package, complete the submission and download Mozilla's signed `.xpi` when available. The unsigned ZIP is not permanently installable in regular Firefox.
-3. In Firefox open `about:addons`, choose the gear menu → **Install Add-on From File…**, and select the **signed XPI**.
-4. Keep the same Gecko ID (`makerparts@local.extension`) for future versions. Increment the manifest/build version, sign again, and install the update without uninstalling to retain data.
+This installation remains available across browser restarts while the extracted folder stays in place. After replacing its files with a newer package, use **Reload** on the MakerParts card and refresh open MakerBazar tabs.
 
-Signing needs your Mozilla account and may involve review. This repository does not include a signed XPI or credentials.
+## Firefox
 
-For development only: open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, select `dist/firefox/manifest.json`. This default development build supports Firefox 115+ and Mercury 129.0.2 at the manifest level. The obsolete `dist/firefox-legacy` alias has been removed; use `dist/firefox`. The signed-distribution package is built from `dist/firefox-release` and requires Firefox 140+. Do not load multiple variants simultaneously: they use the same extension ID. Export a backup before removing or replacing a development install. Mercury runtime functionality remains to be verified.
+Firefox requires Mozilla-signed add-ons for a permanent installation. Temporary add-ons loaded from `about:debugging` are removed when Firefox closes.
 
-## Daily use
-- Click the toolbar icon on a product page. Name, link and structured product price are suggested when the store supplies metadata. Review prices, variants and currency; shipping and taxes are not included automatically.
-- Choose an existing project or **Create a new project**. Select a category, quantity, status and optional notes.
-- Open **project library** to search, filter, edit, move a part to another project, or track planned → ordered → received.
-- Prices are per unit; totals multiply by quantity and remain separate for each currency. Missing prices are called out.
-- Export a JSON backup periodically. Import **replaces** the current library after confirmation. Chrome and Firefox libraries are separate; use export/import to transfer.
+To install a signed XPI from a file:
 
-## Variants and appearance
-- The form includes editable **Model / selected variant** and **SKU / part number** fields. On MakerBazar, choose the desired variant on the product page before saving. Capture uses the selected variant ID, its price, SKU and variant-specific link when the page provides them; it does not guess an exact board revision from a generic family name.
-- MakerBazar product JSON is read from the page, or its public same-origin Shopify product endpoint if needed. Prices and variant labels still need review, especially if a store's theme changes.
-- The floating **Save to MakerParts** button appears only on `makerbazar.in` / `www.makerbazar.in`. It opens quick-add in a small window. Refresh an already-open store page after reloading the extension.
-- Open the **gear icon** in the popup or library to reach the separate Settings tab. Choose **Dark mode**, **Light mode** or **System theme** there. The preference is shared and persists across restarts.
-- **Resistors** and **Capacitors** have separate categories. Existing Passive components records keep their category; edit them to recategorize.
+1. Save the XPI to your computer.
+2. In Firefox, open `about:addons` and select the gear menu.
+3. Choose **Install Add-on From File**, select the XPI, then confirm **Add**.
 
-## Privacy and storage
-No developer-operated server, telemetry or remote scripts. Store-cart changes happen only through the user-triggered Restore Project and Clear Cart controls; no checkout or purchase is submitted. MakerBazar alone has persistent site access for the floating save button and selected-variant capture; other sites use temporary access granted by your toolbar click. Parts are stored in `storage.local` in the current browser profile. Closing the browser preserves them; uninstalling the extension or deleting the profile can remove them.
+The current self-distributed signed package is attached as a `mozilla-output` artifact to the latest successful [Firefox signing run](https://github.com/senrishi/makerparts/actions/workflows/firefox-release.yml). Download and extract `makerparts-<version>.xpi` from that artifact. The public AMO listing is a separate distribution channel. Once Mozilla publishes it, users can install from the [MakerParts listing](https://addons.mozilla.org/en-US/firefox/addon/makerparts/).
 
-## References
-- [Firefox temporary installation](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)
-- [Mozilla signing](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/)
-- [Chrome storage](https://developer.chrome.com/docs/extensions/reference/api/storage)
+The signed Firefox build targets Firefox 140 and newer. The separate Mercury-compatible build targets older Firefox APIs but is unsigned and is not a permanent install package for standard Firefox.
 
-## Project hub and loose parts
-The home page shows project names and Miscellaneous. Open a list to view its parts. Before any parts have been saved, the quick-add form defaults to **Create a new project**, with the new name field visible. Later saves remember the last added part’s project. Enter a name to create/use that project; leave it blank to save to **Miscellaneous**. Miscellaneous is also in the dropdown. Edit a part to move it to another list. Existing project assignments remain unchanged.
+## Your library
 
-The hub uses larger text and a matte black/gray default appearance. Your explicit theme preference is retained. The floating save window resizes with its window; the toolbar popup keeps a compact fixed size.
+Chrome and Firefox store separate copies of your library in their own browser profiles; the extension does not sync them. Use **Export backup** in the project library to create a JSON backup and **Import backup** to replace the library in another profile. Import asks for confirmation before replacing data.
 
-## Save a MakerBazar cart
-On MakerBazar's cart page, the floating button changes to **Save Cart**. Click it to preview the cart, then choose an existing project, name a new one, or leave the new name blank for Miscellaneous. **Save entire cart** copies all listed variants and quantities into that list without changing the store cart. Repeating the save adds another copy. The preview is a snapshot; reopen it if the store cart changes.
-
-Home estimates use listed unit prices × quantities. **Still to buy** covers planned parts; **Already spent** covers ordered and received parts; **Total parts value** covers all saved parts including Miscellaneous. Currencies remain separate and missing prices are flagged. Shipping and checkout-only adjustments are not estimated.
-
-After a successful individual or cart save, the popout shows **Saved successfully** and closes after 1.4 seconds. Errors stay open for correction. After updating this development build, reload the extension in `about:debugging` / `chrome://extensions`, then refresh both your library and MakerBazar tabs so their code and styles match.
-
-## Mercury local permanent installation
-`npm run package` also generates `artifacts/makerparts-mercury-0.1.0.xpi` from the Firefox 115+ compatibility build. This file is unsigned; it is distinct from the Firefox 140+ release/signing ZIP.
-
-Export your library before replacing the temporary installation. In Mercury, try setting `xpinstall.signatures.required` to `false` in `about:config`, then remove the temporary add-on and install the XPI through `about:addons` → gear menu → Install Add-on From File. Import the exported library if necessary. This allows unsigned add-ons browser-wide in builds that honor the preference. Mercury's source build configuration disables mandatory signing, but this particular macOS binary's enforcement has not been verified. If it rejects the package as unsigned/corrupt, a compatible signed build or a build permitting unsigned extensions is needed; the temporary loader will still not persist across restarts.
-
-Source: [Mercury build configuration](https://github.com/Alex313031/Mercury/blob/main/mozconfigs/mozconfig), [Mozilla signing behavior](https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox).
-
-
-## Restore Project and Clear Cart
-Open a project (or Miscellaneous) and click **Restore project**. Only **Planned** parts are included; Ordered and Received parts stay excluded and statuses do not change. The preview checks the exact MakerBazar variants, shows the current cart that will be replaced, and requires the replacement checkbox before proceeding. Other-store products, ambiguous variants, sold-out variants, an empty Planned list or a cart changed since the preview block the operation before clearing. Duplicate saved variants are combined by quantity.
-
-The extension saves the previous cart lines locally before replacing them. If the store cannot add the exact quantities, it attempts to restore the previous cart. Recovery can fail if items become unavailable or the network fails; the popout reports that explicitly and offers a previous-cart JSON backup. Keep the store tab and restore window open until the result appears. Shipping, discounts and availability remain controlled by the store.
-
-On MakerBazar's cart page, **Clear Cart** appears above **Save Cart**. Clear Cart immediately empties the store cart **without confirmation**, then refreshes the page. It does not remove parts from the extension library.
-
-New saves now remember the last added part's project, including Miscellaneous, across browser restarts. Saving a cart remembers that destination too. You can still choose Create a new project; leaving its name blank saves to Miscellaneous. Adding from an explicitly opened project keeps that project's selection. Editing an older part does not change the remembered destination. If the remembered project is deleted, the form falls back to Create a new project.
+Updating MakerParts with the same extension ID preserves its library. Uninstalling the extension or deleting its browser profile may remove the library, so keep a backup if the data matters to you.

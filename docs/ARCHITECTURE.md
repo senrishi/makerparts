@@ -1,32 +1,33 @@
-# Source layout
+# Architecture
 
-`src/` contains shared source, copied into each generated browser build:
+MakerParts is a shared JavaScript WebExtension with browser-specific Manifest V3 builds. The Chrome service worker and Firefox background script use the same message and storage model.
 
-| Directory | Responsibility |
-| --- | --- |
-| `pages/` | Popup, library and settings entry pages; page controllers |
-| `components/` | Reusable part form, part list rendering and DOM helpers |
-| `core/` | Data model, validation, totals, browser messaging, serialized storage, formatting |
-| `background/` | Runtime message routing and floating capture window creation |
-| `capture/` | Product and selected-variant extraction |
-| `content/` | MakerBazar-only floating button |
-| `settings/` | Theme persistence and settings navigation |
-| `styles/` | Base, library, forms, popup, theme and settings styles; `main.css` imports them |
-| `assets/icons/` | Icon source and browser-ready images |
+## Extension surfaces
 
-`dist/chrome/` and `dist/firefox/` are development install folders. `dist/firefox-release/` is the modern Firefox signing build. All are generated: edit `src/`, then rebuild. The obsolete `firefox-legacy` alias is removed during builds. Root manifest locations remain unchanged.
+| Area              | Responsibility                                                            |
+| ----------------- | ------------------------------------------------------------------------- |
+| `src/pages/`      | Toolbar popup, project library, settings, cart save, and restore views    |
+| `src/components/` | Shared forms, project picker, part lists, totals, and save feedback       |
+| `src/core/`       | Library schema, validation, estimates, messaging, storage, and formatting |
+| `src/background/` | Message routing, serialized writes, tab operations, and capture windows   |
+| `src/capture/`    | Product, cart, and restore data extraction in the active tab              |
+| `src/content/`    | MakerBazar-only floating capture button                                   |
+| `src/styles/`     | Shared neutral theme and responsive page styles                           |
 
-`artifacts/` holds generated ZIPs and UI screenshots; it is ignored by Git. Packaging recreates ZIPs so moved or deleted files cannot linger in them. `scripts/` holds build, package and browser integration tooling; `tests/` holds data-model tests; `docs/` holds project and installation information.
+Build outputs are generated from `src/`. `dist/chrome` is the unpacked Chrome extension. `dist/firefox` is the Firefox-compatible build for local development and Mercury. `dist/firefox-release` is the signed-distribution build for Firefox 140 and newer.
 
-## Popup sizing and initialization
-The toolbar popup uses explicit 460 × 560 pixel intrinsic dimensions. Avoid `max-height: 100vh` and `max-width: 100vw` on the popup body: during browser popup auto-sizing, viewport-dependent constraints can create a circular measurement and collapse the popup. Fields scroll inside the form while the Save action stays in place. Standalone capture URLs have a `capture-window` class with viewport-filling sizing and a centered content width; this mode is intentionally separate from toolbar auto-sizing.
+## Library data
 
-The form mounts as soon as storage is read. Product capture then fills it asynchronously, unless the user has started editing. Loading and failure messages are visible independently of capture. Extension storage keys and the Firefox extension ID remain unchanged during the reorganization.
+The library is stored in `browser.storage.local` under one validated state object. Projects contain parts with a name, product URL, category, quantity, currency, optional price, status, and optional model, SKU, and notes. The built-in Miscellaneous destination does not require a project record. `lastProjectId` remembers the destination used for the most recently added part.
 
-Cart capture uses a self-contained `capture/cart.js` function executed in the store tab to read its current cart session. `pages/cart.js` renders a preview using the shared project picker. `saveCart` resolves the destination once and validates all lines before the background storage queue commits the result. Home cost calculations live in `core/estimates.js`, with presentation in `components/cost-overview.js`.
+The background message handler serializes writes so popup and library operations cannot overwrite one another. Import validates the complete backup before replacing the current state. There is no account service or cloud database.
 
-Shopify endpoint behavior: [Ajax Cart API](https://shopify.dev/docs/api/ajax/reference/cart).
+## Site access
 
-The build combines the source CSS modules into one generated `styles/main.css` and adds a content-hash revision to each page's stylesheet link. This prevents cached imported styles from lagging behind new markup. Shared `save-feedback.js` renders accessible confirmation and closes transient capture views only after successful persistence.
+The toolbar uses `activeTab` and `scripting` after a user clicks the extension. Persistent host access and the floating content script are restricted to `makerbazar.in` and `www.makerbazar.in`.
 
-Artifact retention keeps only the current package.json version of generated Chrome/Firefox ZIPs, Mercury XPI and reviewer-source ZIP. Older recognized MakerParts packages are pruned after packaging succeeds. UI screenshots live under `artifacts/previews/` so the root contains only the current install/review files.
+Product metadata is advisory and remains editable. MakerBazar variant capture uses the selected variant when the page exposes it, including its price, SKU, and variant-specific URL. Store cart operations are user-triggered: Save Cart reads the current cart, while Clear Cart and Restore Project modify it. Restore Project validates planned variants, shows the existing cart before replacement, stores a local recovery copy, and attempts to restore the previous cart if adding the planned items fails.
+
+## Browser storage and permissions
+
+Chrome and Firefox profiles are separate. Backups are the supported way to move a library between them. The extension requests storage and user-triggered tab access; MakerBazar has the only persistent website permission. More detail is in [Privacy and permissions](PRIVACY.md).
