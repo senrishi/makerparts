@@ -1,8 +1,15 @@
 name: Publish Firefox
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      channel:
+        description: Mozilla distribution channel
+        type: choice
+        options: [listed, unlisted]
+        default: listed
+        required: true
 permissions:
   contents: read
 concurrency:
@@ -21,16 +28,17 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: '24'
+          node-version: "24"
           cache: npm
       - run: npm ci
       - name: Verify release version
         run: node scripts/release-preflight.mjs
-      - name: Submit public Firefox listing
+      - name: Submit Firefox version to Mozilla
         env:
           WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
           WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-        run: npm run sign:firefox -- --channel=listed --metadata=release/amo-metadata.json
+          AMO_CHANNEL: ${{ inputs.channel || 'listed' }}
+        run: npm run sign:firefox -- --channel="$AMO_CHANNEL" --metadata=release/amo-metadata.json
       - name: Preserve signing output
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

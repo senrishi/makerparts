@@ -19,7 +19,7 @@ The automated listed submission workflow is active. The public signing build req
 
 - **Push main / pull request:** Node 24 install, formatting check, unit tests, builds, strict Firefox release lint, real Chromium integration, install ZIPs/XPI and reviewer source archive. Artifacts are attached to the run for 14 days.
 - **Push `v*` tag:** the same checks must pass first. The publication job verifies the tag matches package.json, builds/validates again, uploads readable reviewer source and the release package to Mozilla's listed channel.
-- **Manual Publish Firefox run:** submits the checked-out version through the same pipeline, useful for the initial submission. A previously submitted version cannot be reused.
+- **Manual Publish Firefox run:** choose `listed` for public AMO distribution or `unlisted` to have Mozilla sign an XPI for local/self-distribution. The unlisted workflow run stores the signed XPI as the `mozilla-output` artifact. Version numbers are unique across both channels, so never submit the same version on both.
 
 Actions are pinned to commit SHAs. Jobs have read-only repository permission. Mozilla secrets are only available to the submission step; pull requests and ordinary builds do not upload to Mozilla. Publication jobs are serialized to avoid simultaneous release submissions. There is no GitHub Pages hosting or private update server: approved public AMO releases are distributed by Mozilla.
 
@@ -38,6 +38,8 @@ git push origin v0.1.1
 ```
 
 Use a new version for each submission. After Mozilla approves/publishes a release, existing compatible installations from the listing receive updates through Firefox's add-on update system. The CI submission does not install it into your local browser, and cannot guarantee Mozilla review timing. Manual workflow retries should only be used when the previous attempt did not successfully submit that version.
+
+To create a permanent local Firefox install before a public listing is approved, submit a new version with the manual workflow and choose **unlisted**. Download its signed XPI from that GitHub Actions run and install it through `about:addons` → gear → **Install Add-on From File**. This public Firefox build targets 140+. Keep version numbers unique; if 0.1.5 is used for unlisted signing, the next listed release must use 0.1.6 or higher.
 
 ## Source and privacy
 

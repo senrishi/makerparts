@@ -212,3 +212,9 @@
 - Mozilla's 0.1.3 submission was accepted by the automated upload workflow and awaits Mozilla approval. A successful upload does not update an installed add-on before Mozilla approves and signs the version.
 - Created 0.1.4 packages with the fix and category-grouped copy format. The Mercury-compatible XPI declares Firefox 115+; Chrome and Firefox packages use the same updated source.
 - GitHub release checks passed and Mozilla accepted 0.1.4 for review: https://addons.mozilla.org/en-US/developers/addon/makerparts/versions/6707741 . It awaits Mozilla approval/signing.
+
+## Permanent install in Firefox before listing approval
+
+- Confirmed Firefox 160 is installed in the user's active profile; MakerParts was not permanently installed there.
+- Added a manual release workflow channel choice so Mozilla can sign an unlisted XPI for self-installation while listed review is pending. Tag pushes remain listed submissions.
+- Version 0.1.5 is reserved for the unlisted signed package; the next listed release must use a higher version because Mozilla requires version numbers to be unique across channels.
