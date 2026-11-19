@@ -17,13 +17,11 @@
 
       <section class="settings-card appearance-card">
         <h2>Appearance</h2>
-        <label
-          >Theme<select aria-label="Appearance" data-theme-picker>
-            <option value="system">System theme</option>
-            <option value="light">Light mode</option>
-            <option value="dark">Dark mode</option>
-          </select></label
-        >
+        <select aria-label="Theme" data-theme-picker>
+          <option value="system">System theme</option>
+          <option value="light">Light mode</option>
+          <option value="dark">Dark mode</option>
+        </select>
       </section>
       <section class="settings-card">
         <h2>This device</h2>
@@ -70,25 +68,26 @@
               autocomplete="current-password"
               required
           /></label>
-          <button class="primary">Sign in and enable sync</button>
+          <div id="sync-login-actions" class="sync-action-row">
+            <button class="primary">Sign in and enable sync</button>
+            <span id="sync-status" class="sync-status-tag" role="status"
+              >Checking sync…</span
+            >
+          </div>
         </form>
         <div id="sync-controls" class="sync-account-row" hidden>
           <div class="sync-account-info">
             <strong>Automatic sync</strong>
             <p id="sync-account"></p>
           </div>
-          <button class="primary" data-action="cloudSync">Sync now</button>
-        </div>
-        <footer class="sync-footer">
-          <div class="sync-state">
-            <strong>Sync status</strong>
-            <p id="sync-status" role="status">Checking sync…</p>
+          <div id="sync-active-actions" class="sync-action-row">
+            <button class="primary" data-action="cloudSync">Sync now</button>
           </div>
-          <button data-action="cloudLogout" hidden>Sign out</button>
-        </footer>
+          <button data-action="cloudLogout">Sign out</button>
+        </div>
       </section>
       <section class="settings-card">
-        <h2>Local backups</h2>
+        <h2>Backup data</h2>
         <div class="actions">
           <button id="export-backup">Export backup</button>
           <button id="choose-backup">Import backup</button>

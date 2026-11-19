@@ -87,18 +87,9 @@ aside > .settings-link {
 
 .appearance-card,
 .sync-account-row,
-.sync-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
 .appearance-card h2,
 .appearance-card label,
-.sync-account-info p,
-.sync-footer p {
+.sync-account-info p {
   margin: 0;
 }
 
@@ -107,21 +98,8 @@ aside > .settings-link {
   overflow-wrap: anywhere;
 }
 
-.sync-account-info p,
-.sync-footer p {
+.sync-account-info p {
   font-size: 0.875rem;
-}
-
-.sync-footer {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #8886;
-}
-
-.sync-footer button {
-  background: transparent;
-  border-color: transparent;
-  text-decoration: underline;
 }
 
 #sync-login {
@@ -158,30 +136,6 @@ aside > .settings-link {
 .settings-page .actions button {
   min-height: 42px;
   font-weight: 600;
-}
-
-.sync-footer {
-  border: 1px solid #8886;
-  border-inline-start-width: 4px;
-  border-radius: 8px;
-  background: #8881;
-  padding: 12px 16px;
-}
-
-.sync-state {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.sync-state strong {
-  display: block;
-  font-size: 0.875rem;
-  margin-bottom: 3px;
-}
-
-.sync-state #sync-status {
-  font-size: 1rem;
-  font-weight: 650;
 }
 
 #backup-status:empty {
@@ -239,7 +193,28 @@ aside > .settings-link {
   gap: 16px;
 }
 
-.sync-footer {
-  margin-top: 20px;
-  padding: 14px 16px;
+.settings-page .appearance-card {
+  padding-block: 12px;
+}
+
+.appearance-card select {
+  width: auto;
+  max-width: 100%;
+}
+
+.sync-action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sync-status-tag {
+  max-width: 100%;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid #8888;
+  background: #8882;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
 }

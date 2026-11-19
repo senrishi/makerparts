@@ -25,7 +25,7 @@ The signed Firefox build targets Firefox 140 and newer. The separate Mercury-com
 
 ## Your library
 
-Each browser profile has its own Local library. Sign in to view projects from all connected browsers in the Cloud tab. Use **Copy to Local** to bring a cloud project into this browser. Use **Settings → Local backups** to export or import a JSON backup. Import asks for confirmation before replacing data.
+Each browser profile has its own Local library. Sign in to view projects from all connected browsers in the Cloud tab. Use **Copy to Local** to bring a cloud project into this browser. Use **Settings → Backup data** to export or import a JSON backup. Import asks for confirmation before replacing data.
 
 Update all connected browsers before enabling sync with 0.1.9. Earlier versions use a shared library format and can overwrite browser grouping if they keep syncing.
 
