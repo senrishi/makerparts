@@ -579,6 +579,14 @@ dialog::backdrop {
   min-width: 0;
 }
 
+.library-sections .sidebar-device > summary {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 8px 6px;
+  font-size: 0.9375rem;
+}
+
 .sidebar-count {
   margin-inline-start: auto;
   font-size: 0.875rem;
