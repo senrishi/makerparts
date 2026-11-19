@@ -40,7 +40,12 @@
         <p id="device-feedback" role="status"></p>
       </section>
       <section id="sync" class="settings-card">
-        <h2>Cloud sync</h2>
+        <div class="sync-heading">
+          <h2>Cloud sync</h2>
+          <span id="sync-status" class="sync-status-tag" role="status"
+            >Checking sync…</span
+          >
+        </div>
         <p id="sync-intro" class="muted">
           Sync saved projects and parts through Supabase.
         </p>
@@ -68,21 +73,14 @@
               autocomplete="current-password"
               required
           /></label>
-          <div id="sync-login-actions" class="sync-action-row">
-            <button class="primary">Sign in and enable sync</button>
-            <span id="sync-status" class="sync-status-tag" role="status"
-              >Checking sync…</span
-            >
-          </div>
+          <button class="primary">Sign in and enable sync</button>
         </form>
         <div id="sync-controls" class="sync-account-row" hidden>
           <div class="sync-account-info">
             <strong>Automatic sync</strong>
             <p id="sync-account"></p>
           </div>
-          <div id="sync-active-actions" class="sync-action-row">
-            <button class="primary" data-action="cloudSync">Sync now</button>
-          </div>
+          <button class="primary" data-action="cloudSync">Sync now</button>
           <button data-action="cloudLogout">Sign out</button>
         </div>
       </section>

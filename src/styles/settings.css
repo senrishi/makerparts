@@ -208,14 +208,21 @@ aside > .settings-link {
   max-width: 100%;
 }
 
-.sync-action-row {
+.sync-heading {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 8px 16px;
   flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.settings-page .sync-heading h2 {
+  margin: 0;
 }
 
 .sync-status-tag {
+  margin-inline-start: auto;
   max-width: 100%;
   padding: 4px 9px;
   border-radius: 999px;

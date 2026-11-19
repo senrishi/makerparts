@@ -18,10 +18,6 @@ function render(state) {
   get("sync-intro").hidden = Boolean(state.email);
   panel.querySelector('[data-action="cloudLogout"]').hidden = !state.email;
   get("sync-account").textContent = state.email || "";
-  const actions = get(
-    form.hidden ? "sync-active-actions" : "sync-login-actions",
-  );
-  if (output.parentElement !== actions) actions.append(output);
   output.textContent = state.message;
 }
 
