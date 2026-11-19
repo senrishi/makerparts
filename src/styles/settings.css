@@ -86,9 +86,15 @@ aside > .settings-link {
 }
 
 .appearance-card,
-.sync-account-row,
+.sync-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .appearance-card h2,
-.appearance-card label,
 .sync-account-info p {
   margin: 0;
 }
