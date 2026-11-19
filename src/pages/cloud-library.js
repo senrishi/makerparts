@@ -38,9 +38,11 @@ export function setupCloudView(openLocalProject) {
   function renderProject() {
     const selected = entries.get(selectedKey);
     for (const button of picker.querySelectorAll("button")) {
-      if (button.value === selectedKey)
+      if (button.value === selectedKey) {
         button.setAttribute("aria-current", "true");
-      else button.removeAttribute("aria-current");
+        const group = button.closest(".sidebar-device");
+        if (group) group.open = true;
+      } else button.removeAttribute("aria-current");
     }
     copy.hidden = remove.hidden = !selected;
     get("cloud-totals").hidden = get("cloud-toolbar").hidden = !selected;
@@ -80,27 +82,35 @@ export function setupCloudView(openLocalProject) {
     });
   }
   function render(devices) {
+    const expanded = new Set(
+      [...picker.querySelectorAll(".sidebar-device[open]")].map(
+        (group) => group.dataset.device,
+      ),
+    );
     entries = new Map();
     deviceGroups = [];
     const home = el("button", "All projects");
     home.type = "button";
+    home.className = "sidebar-home";
     home.onclick = () => open("");
     picker.replaceChildren(home);
     for (const { id: deviceId, label, snapshot } of devices) {
       if (deviceId === "legacy") continue;
-      const group = el("div", undefined, "sidebar-device");
-      const heading = el("p", label, "muted");
-      group.append(heading);
+
       const projects = [...snapshot.projects];
       if (snapshot.parts.some((part) => part.projectId === MISC_ID))
         projects.push({ id: MISC_ID, name: "Miscellaneous" });
-      if (projects.length)
-        deviceGroups.push({
-          deviceId,
-          label: heading.textContent,
-          snapshot,
-          projects,
-        });
+      if (!projects.length) continue;
+      const group = el("details", undefined, "sidebar-device");
+      group.dataset.device = deviceId;
+      group.open = expanded.has(deviceId);
+      const heading = el("summary");
+      heading.append(
+        el("span", label),
+        el("span", String(projects.length), "sidebar-count"),
+      );
+      group.append(heading);
+      deviceGroups.push({ deviceId, label, snapshot, projects });
       for (const { id: projectId, name } of projects) {
         const value = JSON.stringify([deviceId, projectId]);
         entries.set(value, {
@@ -115,7 +125,7 @@ export function setupCloudView(openLocalProject) {
         button.onclick = () => open(value);
         group.append(button);
       }
-      if (projects.length) picker.append(group);
+      picker.append(group);
     }
     if (!entries.has(selectedKey)) selectedKey = "";
     renderProject();

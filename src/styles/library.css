@@ -522,36 +522,82 @@ dialog::backdrop {
   overflow-y: auto;
 }
 
-.library-sections details + details {
-  margin-top: 8px;
+.library-sections > details + details {
+  margin-top: 10px;
 }
 
-.library-sections summary {
-  padding: 8px 10px;
+.library-sections summary,
+.library-sections button.sidebar-home {
+  padding: 10px 12px;
   border: 1px solid #8886;
   border-radius: 8px;
-  cursor: pointer;
+  font-size: 1rem;
   font-weight: 650;
 }
 
+.library-sections summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  overflow-wrap: anywhere;
+  background: #8882;
+  cursor: pointer;
+  list-style: none;
+}
+
+.library-sections summary::-webkit-details-marker {
+  display: none;
+}
+
+.library-sections summary::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.library-sections details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
 .library-sections :is(summary[data-current], button[aria-current]) {
+  border-inline-start: 4px solid currentColor;
   background: #8884;
   font-weight: 700;
 }
 
-.sidebar-projects,
-.sidebar-device {
-  display: grid;
-  gap: 3px;
-}
-
 .sidebar-projects {
-  padding: 4px 0 4px 14px;
+  display: grid;
+  gap: 6px;
+  padding: 8px 0 4px 8px;
 }
 
-.sidebar-device p {
-  margin: 8px 0 2px;
-  overflow-wrap: anywhere;
+.sidebar-device {
+  min-width: 0;
+}
+
+.sidebar-count {
+  margin-inline-start: auto;
+  font-size: 0.875rem;
+}
+
+.sidebar-projects button:not(.sidebar-home) {
+  width: calc(100% - 12px);
+  margin-inline-start: 12px;
+  border-inline-start: 2px solid #8886;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9375rem;
+}
+
+.sidebar-projects button:not(.sidebar-home)[aria-current] {
+  border-inline-start: 4px solid currentColor;
+}
+
+.sidebar-device button {
+  margin-top: 3px;
 }
 
 .cloud-device-projects .project-grid {

@@ -52,6 +52,7 @@ function render() {
   ]) {
     const button = el("button", name);
     button.type = "button";
+    if (!id) button.className = "sidebar-home";
     if (id === selected) button.setAttribute("aria-current", "true");
     button.onclick = () => selectList(id);
     picker.append(button);
