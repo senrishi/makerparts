@@ -6,6 +6,12 @@ const panel = get("sync");
 const form = get("sync-login");
 const output = get("sync-status");
 
+function notice(title, detail = "", kind = "success") {
+  get("sync-notice").dataset.kind = kind;
+  get("sync-notice-title").textContent = title;
+  get("sync-notice-detail").textContent = detail;
+}
+
 function render(state) {
   form.hidden = Boolean(state.email) && !state.reconnect;
   get("sync-controls").hidden = !state.email;
@@ -20,9 +26,15 @@ async function run(action) {
     button.disabled = true;
   });
   try {
-    render(await request(action));
+    const state = await request(action);
+    render(state);
+    if (action.type === "cloudLogin" && state.email) {
+      notice("Signed in successfully", state.conflict ? state.message : "");
+    } else if (action.type === "cloudLogout") {
+      notice("Signed out");
+    }
   } catch (error) {
-    output.textContent = error.message;
+    notice("Cloud sync error", error.message, "error");
   } finally {
     buttons.forEach((button) => {
       button.disabled = false;
@@ -40,7 +52,11 @@ form.onsubmit = async (event) => {
     access.data_collection = dataTypes;
   try {
     if (!(await api.permissions.request(access))) {
-      output.textContent = "Cloud sync access was declined.";
+      notice(
+        "Cloud sync access declined",
+        "Try signing in again and allow access when prompted.",
+        "error",
+      );
       return;
     }
     const input = new FormData(form);
@@ -51,7 +67,7 @@ form.onsubmit = async (event) => {
       password: input.get("password"),
     });
   } catch (error) {
-    output.textContent = error.message;
+    notice("Cloud sync error", error.message, "error");
   }
 };
 

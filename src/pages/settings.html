@@ -28,6 +28,15 @@
       <section id="sync" class="settings-card">
         <h2>Cloud sync</h2>
         <p class="muted">Sync projects and parts to Supabase.</p>
+        <div
+          id="sync-notice"
+          class="sync-notice"
+          role="status"
+          aria-atomic="true"
+        >
+          <strong id="sync-notice-title"></strong>
+          <span id="sync-notice-detail"></span>
+        </div>
         <form id="sync-login" hidden>
           <label
             >Email<input

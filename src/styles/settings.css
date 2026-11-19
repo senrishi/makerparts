@@ -53,3 +53,30 @@ aside > .settings-link {
 aside > .settings-link {
   padding: 0;
 }
+
+.sync-notice:not([data-kind]) {
+  display: none;
+}
+
+.sync-notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid currentColor;
+  border-inline-start-width: 5px;
+  border-radius: 8px;
+}
+
+.sync-notice[data-kind="success"] {
+  background: #303030;
+  color: #fff;
+}
+
+.sync-notice[data-kind="error"] {
+  background: #fce8e8;
+  color: #781e1e;
+}
+
+.sync-notice strong,
+.sync-notice span:not(:empty) {
+  display: block;
+}
