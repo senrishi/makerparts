@@ -48,7 +48,18 @@ export async function cloudAction(action, library, cloud) {
     const name = action.name.trim();
     if (name.length > 48) throw Error("Use 48 characters or fewer.");
     cloudDevice = { id: cloudDevice?.id ?? crypto.randomUUID(), name };
-    await storage.set({ cloudDevice });
+    const { cloudCatalog } = await storage.get("cloudCatalog");
+    if (cloud && Array.isArray(cloudCatalog)) {
+      const label = browserDeviceLabel(navigator.userAgent, name);
+      await storage.set({
+        cloudDevice,
+        cloudCatalog: cloudCatalog.map((entry) =>
+          entry.id === cloudDevice.id ? { ...entry, label } : entry,
+        ),
+      });
+    } else {
+      await storage.set({ cloudDevice });
+    }
   }
   if (action.type === "cloudLogout") {
     await storage.remove(["cloud", "cloudCatalog"]);
@@ -207,6 +218,8 @@ export async function cloudAction(action, library, cloud) {
       error.message.startsWith("Grant cloud");
     cloud.message = error.message;
     await storage.set({ cloud });
+    if (action.type === "cloudRenameDevice")
+      return { ...status(cloud), renamePending: true };
   }
   return status(cloud);
 }

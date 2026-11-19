@@ -89,11 +89,7 @@ export function setupCloudView(openLocalProject) {
     for (const { id: deviceId, label, snapshot } of devices) {
       if (deviceId === "legacy") continue;
       const group = el("div", undefined, "sidebar-device");
-      const heading = el(
-        "p",
-        label.includes(" - ") ? label : `${label} - Unknown device`,
-        "muted",
-      );
+      const heading = el("p", label, "muted");
       group.append(heading);
       const projects = [...snapshot.projects];
       if (snapshot.parts.some((part) => part.projectId === MISC_ID))
@@ -171,6 +167,12 @@ export function setupCloudView(openLocalProject) {
     if (area === "local" && changes.cloudCatalog)
       render(changes.cloudCatalog.newValue || []);
   });
+  api.storage.local
+    .get("cloudCatalog")
+    .then(({ cloudCatalog }) => {
+      if (cloudCatalog) render(cloudCatalog);
+    })
+    .catch(() => {});
   show("local");
   return () => {
     get("local-section").open = true;
