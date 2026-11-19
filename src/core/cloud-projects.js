@@ -14,25 +14,38 @@ export function canonical(value) {
 
 export function readDevices(library) {
   validateState(library);
-  if (Array.isArray(library.devices)) {
-    return library.devices.map(({ id, label, snapshot }) => ({
+  return (Array.isArray(library.devices) ? library.devices : [])
+    .filter(({ id }) => id !== "legacy")
+    .map(({ id, label, snapshot }) => ({
       id,
       label,
       snapshot: validateState(snapshot),
     }));
-  }
-  if (!library.projects.length && !library.parts.length) return [];
-  return [
-    {
-      id: "legacy",
-      label: "Previous cloud library",
-      snapshot: {
-        version: 1,
-        projects: library.projects,
-        parts: library.parts,
-      },
-    },
-  ];
+}
+
+export function browserDeviceLabel(userAgent) {
+  const browser =
+    [
+      [/Mercury\//i, "Mercury"],
+      [/Edg(?:A|iOS)?\//i, "Edge"],
+      [/OPR\//i, "Opera"],
+      [/(?:Firefox|FxiOS)\//i, "Firefox"],
+      [/Chromium\//i, "Chromium"],
+      [/(?:Chrome|CriOS)\//i, "Chrome"],
+    ].find(([pattern]) => pattern.test(userAgent))?.[1] ?? "Browser";
+
+  const device =
+    [
+      [/Android/i, "Android"],
+      [/iPad/i, "iPad"],
+      [/iPhone/i, "iPhone"],
+      [/Windows/i, "Windows"],
+      [/CrOS/i, "ChromeOS"],
+      [/Macintosh|Mac OS X/i, "macOS"],
+      [/Linux/i, "Linux"],
+    ].find(([pattern]) => pattern.test(userAgent))?.[1] ?? "Unknown device";
+
+  return `${browser} - ${device}`;
 }
 
 export function encodeDevices(devices) {

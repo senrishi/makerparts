@@ -1,4 +1,5 @@
 import {
+  browserDeviceLabel,
   canonical,
   encodeDevices,
   readDevices,
@@ -85,10 +86,10 @@ export async function cloudAction(action, library, cloud) {
     }
     let { cloudDevice } = await storage.get("cloudDevice");
     if (!cloudDevice) {
-      const browser = globalThis.browser ? "Firefox" : "Chrome";
-      cloudDevice = { id: crypto.randomUUID(), label: browser };
+      cloudDevice = { id: crypto.randomUUID() };
       await storage.set({ cloudDevice });
     }
+    const label = browserDeviceLabel(navigator.userAgent);
     const { cloudProgress = {} } = await storage.get("cloudProgress");
     const account = session.user.id;
     const previous = cloudProgress[account] || emptyState();
@@ -138,9 +139,10 @@ export async function cloudAction(action, library, cloud) {
       }
       let device = devices.find((item) => item.id === cloudDevice.id);
       if (!device) {
-        device = { ...cloudDevice, snapshot: emptyState() };
+        device = { id: cloudDevice.id, label, snapshot: emptyState() };
         devices.push(device);
       }
+      device.label = label;
       device.snapshot = updateDevice(device.snapshot, library, previous);
       if (action.type === "cloudDelete") {
         const target = devices.find((item) => item.id === action.deviceId);
@@ -155,7 +157,11 @@ export async function cloudAction(action, library, cloud) {
         }
       }
       try {
-        if (canonical(devices) !== original) {
+        const legacyData =
+          remote &&
+          (!Array.isArray(remote.library.devices) ||
+            remote.library.devices.some(({ id }) => id === "legacy"));
+        if (legacyData || canonical(devices) !== original) {
           await call(
             "/rest/v1/rpc/save_library",
             {

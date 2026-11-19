@@ -87,10 +87,11 @@ export function setupCloudView(openLocalProject) {
     home.onclick = () => open("");
     picker.replaceChildren(home);
     for (const { id: deviceId, label, snapshot } of devices) {
+      if (deviceId === "legacy") continue;
       const group = el("div", undefined, "sidebar-device");
       const heading = el(
         "p",
-        deviceId === "legacy" ? label : `${label} · ${deviceId.slice(0, 6)}`,
+        label.includes(" - ") ? label : `${label} - Unknown device`,
         "muted",
       );
       group.append(heading);
