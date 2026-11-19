@@ -98,7 +98,7 @@ assert.equal(
 await page.setViewportSize({ width: 460, height: 560 });
 await page.getByRole("link", { name: "Settings", exact: true }).click();
 await page.waitForURL("**/pages/settings.html");
-await page.getByLabel("Appearance").waitFor();
+await page.getByLabel("Theme", { exact: true }).waitFor();
 await page.goBack();
 const rememberedProject = await page
   .locator("select[name=project] option")
@@ -121,7 +121,7 @@ await page.getByRole("button", { name: "Save part", exact: true }).click();
 await page.getByRole("status").filter({ hasText: "Saved" }).waitFor();
 await page.goto(`chrome-extension://${id}/pages/library.html`);
 await page.goto(`chrome-extension://${id}/pages/settings.html`);
-await page.getByLabel("Appearance").selectOption("dark");
+await page.getByLabel("Theme", { exact: true }).selectOption("dark");
 assert.equal(await page.locator("html").getAttribute("data-theme"), "dark");
 await page.reload();
 await page.waitForFunction(
