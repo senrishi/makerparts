@@ -11,11 +11,11 @@
     <main class="settings-page">
       <header>
         <a class="brand" href="library.html">▧ MakerParts</a
-        ><a href="library.html">Project library ↗</a>
+        ><a href="library.html">Project library</a>
       </header>
       <h1>Settings</h1>
 
-      <section class="settings-card">
+      <section class="settings-card appearance-card">
         <h2>Appearance</h2>
         <label
           >Theme<select aria-label="Appearance" data-theme-picker>
@@ -27,7 +27,9 @@
       </section>
       <section id="sync" class="settings-card">
         <h2>Cloud sync</h2>
-        <p class="muted">Sync projects and parts to Supabase.</p>
+        <p id="sync-intro" class="muted">
+          Sync saved projects and parts through Supabase.
+        </p>
         <div
           id="sync-notice"
           class="sync-notice"
@@ -52,32 +54,19 @@
               autocomplete="current-password"
               required
           /></label>
-          <button>Sign in and enable sync</button>
+          <button class="primary">Sign in and enable sync</button>
         </form>
-        <div id="sync-controls" hidden>
-          <p id="sync-account"></p>
-          <button data-action="cloudSync">Sync now</button>
-          <button data-action="cloudLogout">Sign out</button>
+        <div id="sync-controls" class="sync-account-row" hidden>
+          <div class="sync-account-info">
+            <strong>Automatic sync</strong>
+            <p id="sync-account"></p>
+          </div>
+          <button class="primary" data-action="cloudSync">Sync now</button>
         </div>
-        <p id="sync-status" role="status"></p>
-        <div id="sync-conflict" hidden>
-          <p>
-            Export a backup before replacing either copy if you want to keep
-            both.
-          </p>
-          <button
-            data-action="cloudUseLocal"
-            data-confirm="Replace the hosted library with this device’s library?"
-          >
-            Keep this device’s copy
-          </button>
-          <button
-            data-action="cloudUseRemote"
-            data-confirm="Replace this device’s library with the hosted library?"
-          >
-            Use hosted copy
-          </button>
-        </div>
+        <footer class="sync-footer">
+          <p id="sync-status" role="status"></p>
+          <button data-action="cloudLogout" hidden>Sign out</button>
+        </footer>
       </section>
     </main>
     <script type="module" src="sync-settings.js"></script>

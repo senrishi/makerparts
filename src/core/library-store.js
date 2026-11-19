@@ -12,8 +12,19 @@ export function libraryAction(action) {
     if (action.type === "read") return state;
     const next = mutate(state, action);
     await api.storage.local.set({ library: next });
+    if (data.cloud) scheduleSync();
     return next;
   });
   queue = job.catch(() => {});
   return job;
+}
+
+let syncQueued = false;
+function scheduleSync() {
+  if (syncQueued) return;
+  syncQueued = true;
+  queueMicrotask(() => {
+    syncQueued = false;
+    libraryAction({ type: "cloudSync" }).catch(console.error);
+  });
 }

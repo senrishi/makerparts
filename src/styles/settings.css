@@ -80,3 +80,60 @@ aside > .settings-link {
 .sync-notice span:not(:empty) {
   display: block;
 }
+
+.settings-page header {
+  margin-bottom: 24px;
+}
+
+.appearance-card,
+.sync-account-row,
+.sync-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.appearance-card h2,
+.appearance-card label,
+.sync-account-info p,
+.sync-footer p {
+  margin: 0;
+}
+
+.sync-account-info {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sync-account-info p,
+.sync-footer p {
+  font-size: 0.875rem;
+}
+
+.sync-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #8886;
+}
+
+.sync-footer button {
+  background: transparent;
+  border-color: transparent;
+  text-decoration: underline;
+}
+
+#sync-login {
+  display: grid;
+  gap: 12px;
+  max-width: 24rem;
+}
+
+#sync-login label {
+  margin: 0;
+}
+
+#sync-login button {
+  justify-self: start;
+}

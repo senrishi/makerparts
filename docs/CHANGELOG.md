@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.8
+
+- Redesigned Cloud sync settings around automatic sync and a single Sync now action.
+- Combined independent edits automatically and queued sync when local changes are saved.
+
 ## 0.1.6
 
 - Added optional cloud sign-in and automatic project library sync.

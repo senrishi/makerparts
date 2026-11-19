@@ -15,7 +15,8 @@ function notice(title, detail = "", kind = "success") {
 function render(state) {
   form.hidden = Boolean(state.email) && !state.reconnect;
   get("sync-controls").hidden = !state.email;
-  get("sync-conflict").hidden = !state.conflict;
+  get("sync-intro").hidden = Boolean(state.email);
+  panel.querySelector('[data-action="cloudLogout"]').hidden = !state.email;
   get("sync-account").textContent = state.email || "";
   output.textContent = state.message;
 }
@@ -25,11 +26,12 @@ async function run(action) {
   buttons.forEach((button) => {
     button.disabled = true;
   });
+  if (action.type === "cloudSync") output.textContent = "Syncing…";
   try {
     const state = await request(action);
     render(state);
     if (action.type === "cloudLogin" && state.email) {
-      notice("Signed in successfully", state.conflict ? state.message : "");
+      notice("Signed in successfully");
     } else if (action.type === "cloudLogout") {
       notice("Signed out");
     }
@@ -73,7 +75,6 @@ form.onsubmit = async (event) => {
 
 for (const button of panel.querySelectorAll("[data-action]")) {
   button.onclick = () => {
-    if (button.dataset.confirm && !confirm(button.dataset.confirm)) return;
     return run({ type: button.dataset.action });
   };
 }

@@ -1,3 +1,4 @@
+import { canonical, mergeLibraries } from "./cloud-merge.js";
 import { api } from "./api.js";
 import { emptyState, validateState } from "./model.js";
 
@@ -23,7 +24,7 @@ async function call(path, body, token) {
     throw Object.assign(
       Error(
         response.status === 409
-          ? "Hosted library changed. Sync again to review it."
+          ? "Another device is syncing. Retrying shortly."
           : response.status === 401
             ? "Session expired. Sign in again."
             : "Could not complete the cloud request.",
@@ -34,15 +35,7 @@ async function call(path, body, token) {
 }
 
 async function digest(value) {
-  const json = JSON.stringify(value, (_, item) =>
-    item && typeof item === "object" && !Array.isArray(item)
-      ? Object.fromEntries(
-          Object.keys(item)
-            .sort()
-            .map((key) => [key, item[key]]),
-        )
-      : item,
-  );
+  const json = canonical(value);
   const hash = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(json),
@@ -89,58 +82,52 @@ export async function cloudAction(action, library, cloud) {
       cloud.session = session;
       await storage.set({ cloud });
     }
-    const [remote] = await call(
-      "/rest/v1/libraries?select=revision,library",
-      undefined,
-      session.access_token,
-    );
-    const remoteLibrary = remote ? validateState(remote.library) : emptyState();
-    const revision = remote?.revision ?? 0;
     const localHash = await digest(library);
-    const remoteHash = await digest(remoteLibrary);
-    const localChanged = cloud.hash
-      ? cloud.hash !== localHash
-      : Boolean(library.projects.length || library.parts.length);
-    const remoteChanged =
-      cloud.revision !== undefined
-        ? cloud.revision !== revision
-        : Boolean(remote);
-    const resolution = ["cloudUseLocal", "cloudUseRemote"].includes(
-      action.type,
-    );
-    if (
-      (resolution &&
-        (cloud.conflict?.revision !== revision ||
-          cloud.conflict?.localHash !== localHash)) ||
-      (!resolution && localHash !== remoteHash && localChanged && remoteChanged)
-    ) {
-      cloud.conflict = { revision, localHash };
-      cloud.message =
-        "Both copies differ. Choose which library to keep in Settings.";
-      await storage.set({ cloud });
-      return status(cloud);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const [remote] = await call(
+        "/rest/v1/libraries?select=revision,library",
+        undefined,
+        session.access_token,
+      );
+      const hosted = remote ? validateState(remote.library) : emptyState();
+      const hostedHash = await digest(hosted);
+      const base =
+        cloud.baseline ??
+        (cloud.hash === localHash
+          ? library
+          : cloud.hash === hostedHash
+            ? hosted
+            : emptyState());
+      const next = validateState(mergeLibraries(base, library, hosted));
+      const nextHash = await digest(next);
+      try {
+        if (nextHash !== hostedHash) {
+          await call(
+            "/rest/v1/rpc/save_library",
+            {
+              expected_revision: remote?.revision ?? 0,
+              new_library: next,
+            },
+            session.access_token,
+          );
+        }
+      } catch (error) {
+        if (error.status === 409 && attempt === 0) continue;
+        throw error;
+      }
+      cloud.baseline = next;
+      delete cloud.hash;
+      delete cloud.revision;
+      delete cloud.conflict;
+      cloud.reconnect = false;
+      cloud.message = "Last synced " + new Date().toLocaleString();
+      await storage.set(
+        nextHash === localHash ? { cloud } : { cloud, library: next },
+      );
+      break;
     }
-    let next = library;
-    let nextRevision = revision;
-    if (localHash !== remoteHash) {
-      if (action.type === "cloudUseLocal" || (!resolution && localChanged)) {
-        nextRevision = await call(
-          "/rest/v1/rpc/save_library",
-          {
-            expected_revision: revision,
-            new_library: library,
-          },
-          session.access_token,
-        );
-      } else next = remoteLibrary;
-    }
-    cloud.revision = nextRevision;
-    cloud.hash = next === library ? localHash : remoteHash;
-    cloud.conflict = undefined;
-    cloud.reconnect = false;
-    cloud.message = "Last synced " + new Date().toLocaleString();
-    await storage.set(next === library ? { cloud } : { cloud, library: next });
   } catch (error) {
+    delete cloud.conflict;
     cloud.reconnect =
       error.status === 401 ||
       error.message.startsWith("Session expired") ||
@@ -155,8 +142,9 @@ function status(cloud) {
   return {
     email: cloud?.session.user.email,
     reconnect: Boolean(cloud?.reconnect),
-    conflict: Boolean(cloud?.conflict),
-    message: cloud?.message || "Sync is off.",
+    message: cloud?.conflict
+      ? "Waiting to sync…"
+      : cloud?.message || "Sync is off.",
   };
 }
 
