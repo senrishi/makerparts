@@ -19,7 +19,7 @@ MakerParts supports Chrome’s Manifest V3 and signed Firefox releases targeting
 
 ## Privacy
 
-Your library is stored in the current browser profile. MakerParts does not require an account and does not send parts, prices, or carts to a MakerParts server. Site access outside MakerBazar is limited to a page when you click the toolbar button. Read the [privacy and permissions summary](docs/PRIVACY.md).
+Your library is stored in the current browser profile. An account is optional. Turn on Cloud sync in Settings to access the same saved projects across devices and in the web dashboard. Site access outside MakerBazar is limited to a page when you click the toolbar button. Read the [privacy and permissions summary](docs/PRIVACY.md).
 
 ## Documentation
 

@@ -4,7 +4,7 @@
 
 MakerParts stores projects, part names, product links, model and SKU details, categories, quantities, prices, purchase status, notes, and display preferences in the browser profile where it is installed. Backups are JSON files created only when you export them.
 
-Chrome and Firefox profiles do not share data. MakerParts has no account service, cloud database, analytics, advertising, or telemetry. The extension does not send your library or cart contents to a MakerParts server.
+The library stays in the current browser profile by default. Optional Cloud sync uses Supabase to authenticate your account and store a copy of your projects and saved parts, including links, notes, and prices. It keeps an offline copy in the browser. Signing out stops sync on that device. MakerParts does not transmit your live store cart session, and has no advertising, analytics, or telemetry.
 
 ## Website access
 
@@ -12,7 +12,7 @@ Chrome and Firefox profiles do not share data. MakerParts has no account service
 - **Active tab and scripting** allow product capture after you click the toolbar button on a page.
 - **MakerBazar site access** enables the floating button, exact variant capture, cart preview, and user-requested cart operations on `makerbazar.in` and `www.makerbazar.in`.
 
-The extension has no persistent site access to other stores. Product details on other sites are captured only after the toolbar action and remain editable before saving.
+The extension requests access to the Supabase project only when you enable Cloud sync. The extension has no persistent site access to other stores. Product details on other sites are captured only after the toolbar action and remain editable before saving.
 
 ## Store cart actions
 

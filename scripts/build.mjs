@@ -34,7 +34,8 @@ const base = {
   version,
   description:
     "Save electronics parts into projects, with prices, categories and shopping progress.",
-  permissions: ["storage", "activeTab", "scripting"],
+  permissions: ["storage", "activeTab", "scripting", "alarms"],
+  optional_host_permissions: ["https://lwhmajqzjhegqytgfsxb.supabase.co/*"],
   host_permissions: ["https://makerbazar.in/*", "https://www.makerbazar.in/*"],
   content_scripts: [
     {
@@ -92,7 +93,14 @@ for (const target of ["chrome", "firefox", "firefox-release"]) {
       gecko: {
         id: "makerparts@local.extension",
         strict_min_version: "140.0",
-        data_collection_permissions: { required: ["none"] },
+        data_collection_permissions: {
+          required: ["none"],
+          optional: [
+            "personallyIdentifyingInfo",
+            "websiteContent",
+            "personalCommunications",
+          ],
+        },
       },
     };
   if (target === "firefox")

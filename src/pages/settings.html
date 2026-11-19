@@ -29,6 +29,56 @@
           System theme follows your device’s appearance.
         </p>
       </section>
+      <section id="sync" class="settings-card">
+        <h2>Cloud sync</h2>
+        <p>
+          Sign in with your MakerParts account to sync projects and parts,
+          including links and notes, to Supabase. A local copy stays available
+          offline.
+        </p>
+        <form id="sync-login" hidden>
+          <label
+            >Email<input
+              name="email"
+              type="email"
+              autocomplete="username"
+              required
+          /></label>
+          <label
+            >Password<input
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+          /></label>
+          <button>Sign in and enable sync</button>
+        </form>
+        <div id="sync-controls" hidden>
+          <p id="sync-account"></p>
+          <button data-action="cloudSync">Sync now</button>
+          <button data-action="cloudLogout">Sign out</button>
+        </div>
+        <p id="sync-status" role="status"></p>
+        <div id="sync-conflict" hidden>
+          <p>
+            Export a backup before replacing either copy if you want to keep
+            both.
+          </p>
+          <button
+            data-action="cloudUseLocal"
+            data-confirm="Replace the hosted library with this device’s library?"
+          >
+            Keep this device’s copy
+          </button>
+          <button
+            data-action="cloudUseRemote"
+            data-confirm="Replace this device’s library with the hosted library?"
+          >
+            Use hosted copy
+          </button>
+        </div>
+      </section>
     </main>
+    <script type="module" src="sync-settings.js"></script>
   </body>
 </html>

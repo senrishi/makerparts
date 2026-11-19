@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6
+
+- Added optional cloud sign-in and automatic project library sync.
+- Added sync status, manual refresh, and explicit choices when hosted and local copies diverge.
+
 ## 0.1.5
 
 - Added a Mozilla-signed, unlisted Firefox package for self-distribution.

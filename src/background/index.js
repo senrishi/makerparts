@@ -4,6 +4,18 @@ import { BUILD_ID } from "../core/build-info.js";
 import { RELOAD_MESSAGE } from "../core/messaging.js";
 import { api } from "../core/api.js";
 import { libraryAction } from "../core/library-store.js";
+const cloudAlarm = "makerparts-cloud";
+api.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === cloudAlarm)
+    libraryAction({ type: "cloudSync" }).catch(console.error);
+});
+api.alarms
+  .get(cloudAlarm)
+  .then((alarm) => {
+    if (!alarm) return api.alarms.create(cloudAlarm, { periodInMinutes: 1 });
+  })
+  .catch(console.error);
+
 api.runtime.onMessage.addListener((message, sender, respond) => {
   if (sender.id !== api.runtime.id || message?.channel !== "makerparts") return;
   if (message.action?.type === "clearStoreCart") {
@@ -59,6 +71,12 @@ api.runtime.onMessage.addListener((message, sender, respond) => {
     respond({ error: RELOAD_MESSAGE, buildId: BUILD_ID });
     return;
   }
+  if (!message.action || typeof message.action.type !== "string") return;
+  if (
+    message.action.type.startsWith("cloud") &&
+    sender.url !== api.runtime.getURL("pages/settings.html")
+  )
+    return;
   const job = libraryAction(message.action);
   job.then(
     (state) => respond({ state, buildId: BUILD_ID }),
