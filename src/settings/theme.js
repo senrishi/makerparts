@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     const link = document.createElement("a");
     link.href = api.runtime.getURL("pages/settings.html");
-    link.target = "_blank";
     link.className = "settings-link";
     link.textContent = "⚙";
     link.setAttribute("aria-label", "Settings");

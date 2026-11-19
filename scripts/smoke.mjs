@@ -96,12 +96,10 @@ assert.equal(
   460,
 );
 await page.setViewportSize({ width: 460, height: 560 });
-const settingsTabPromise = context.waitForEvent("page");
 await page.getByRole("link", { name: "Settings", exact: true }).click();
-const settingsTab = await settingsTabPromise;
-await settingsTab.waitForLoadState();
-await settingsTab.getByLabel("Appearance").waitFor();
-await settingsTab.close();
+await page.waitForURL("**/pages/settings.html");
+await page.getByLabel("Appearance").waitFor();
+await page.goBack();
 const rememberedProject = await page
   .locator("select[name=project] option")
   .filter({ hasText: "Weather station" })
