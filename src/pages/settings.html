@@ -25,6 +25,23 @@
           </select></label
         >
       </section>
+      <section class="settings-card">
+        <h2>This device</h2>
+        <form id="device-settings" class="device-form">
+          <label
+            >Device name
+            <input
+              id="device-name"
+              maxlength="48"
+              autocomplete="off"
+              placeholder="Automatic"
+            />
+          </label>
+          <button type="submit">Save name</button>
+        </form>
+        <p id="device-label" class="muted"></p>
+        <p id="device-feedback" role="status"></p>
+      </section>
       <section id="sync" class="settings-card">
         <h2>Cloud sync</h2>
         <p id="sync-intro" class="muted">
@@ -88,5 +105,6 @@
     </main>
     <script type="module" src="backup-settings.js"></script>
     <script type="module" src="sync-settings.js"></script>
+    <script type="module" src="device-settings.js"></script>
   </body>
 </html>

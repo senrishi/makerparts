@@ -43,6 +43,13 @@ async function call(path, body, token) {
 const storage = api.storage.local;
 
 export async function cloudAction(action, library, cloud) {
+  let { cloudDevice } = await storage.get("cloudDevice");
+  if (action.type === "cloudRenameDevice") {
+    const name = action.name.trim();
+    if (name.length > 48) throw Error("Use 48 characters or fewer.");
+    cloudDevice = { id: cloudDevice?.id ?? crypto.randomUUID(), name };
+    await storage.set({ cloudDevice });
+  }
   if (action.type === "cloudLogout") {
     await storage.remove(["cloud", "cloudCatalog"]);
     return { message: "Signed out. Library available on this device." };
@@ -84,12 +91,11 @@ export async function cloudAction(action, library, cloud) {
       cloud.session = session;
       await storage.set({ cloud });
     }
-    let { cloudDevice } = await storage.get("cloudDevice");
     if (!cloudDevice) {
       cloudDevice = { id: crypto.randomUUID() };
       await storage.set({ cloudDevice });
     }
-    const label = browserDeviceLabel(navigator.userAgent);
+    const label = browserDeviceLabel(navigator.userAgent, cloudDevice.name);
     const { cloudProgress = {} } = await storage.get("cloudProgress");
     const account = session.user.id;
     const previous = cloudProgress[account] || emptyState();

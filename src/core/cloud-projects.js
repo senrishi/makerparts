@@ -23,7 +23,7 @@ export function readDevices(library) {
     }));
 }
 
-export function browserDeviceLabel(userAgent) {
+export function browserDeviceLabel(userAgent, customName = "") {
   const browser =
     [
       [/Mercury\//i, "Mercury"],
@@ -45,7 +45,7 @@ export function browserDeviceLabel(userAgent) {
       [/Linux/i, "Linux"],
     ].find(([pattern]) => pattern.test(userAgent))?.[1] ?? "Unknown device";
 
-  return `${browser} - ${device}`;
+  return `${browser} - ${customName || device}`;
 }
 
 export function encodeDevices(devices) {

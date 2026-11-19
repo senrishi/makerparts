@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.11
+
+- Added optional custom device names and more space between Settings controls.
+
 ## 0.1.9
 
 - Added separate Local and Cloud project views and browser groups.
