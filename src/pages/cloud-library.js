@@ -13,18 +13,21 @@ export function setupCloudView(openLocalProject) {
     get("cloud-message").textContent = value;
   };
   let entries = new Map();
+  let selectedKey = "";
   function show(tab) {
     const cloud = tab === "cloud";
-    get("local-view").hidden =
-      get("local-nav").hidden =
-      get("new-project").hidden =
-        cloud;
-    get("cloud-view").hidden = get("cloud-nav").hidden = !cloud;
-    get("local-tab").setAttribute("aria-pressed", String(!cloud));
-    get("cloud-tab").setAttribute("aria-pressed", String(cloud));
+    get("local-view").hidden = cloud;
+    get("cloud-view").hidden = !cloud;
+    get("local-tab").toggleAttribute("data-current", !cloud);
+    get("cloud-tab").toggleAttribute("data-current", cloud);
   }
   function renderProject() {
-    const selected = entries.get(picker.value);
+    const selected = entries.get(selectedKey);
+    for (const button of picker.querySelectorAll("button")) {
+      if (button.value === selectedKey)
+        button.setAttribute("aria-current", "true");
+      else button.removeAttribute("aria-current");
+    }
     copy.hidden = remove.hidden = !selected;
     get("cloud-heading").textContent = selected?.name || "Cloud projects";
     const root = get("cloud-parts");
@@ -48,13 +51,16 @@ export function setupCloudView(openLocalProject) {
     }
   }
   function render(devices) {
-    const selected = picker.value;
     entries = new Map();
-    picker.replaceChildren(new Option("Select a cloud project", ""));
+    picker.replaceChildren();
     for (const { id: deviceId, label, snapshot } of devices) {
-      const group = document.createElement("optgroup");
-      group.label =
-        deviceId === "legacy" ? label : `${label} · ${deviceId.slice(0, 6)}`;
+      const group = el("div", undefined, "sidebar-device");
+      const heading = el(
+        "p",
+        deviceId === "legacy" ? label : `${label} · ${deviceId.slice(0, 6)}`,
+        "muted",
+      );
+      group.append(heading);
       const projects = [...snapshot.projects];
       if (snapshot.parts.some((part) => part.projectId === MISC_ID))
         projects.push({ id: MISC_ID, name: "Miscellaneous" });
@@ -66,11 +72,19 @@ export function setupCloudView(openLocalProject) {
           name,
           parts: snapshot.parts.filter((p) => p.projectId === projectId),
         });
-        group.append(new Option(name, value));
+        const button = el("button", name);
+        button.type = "button";
+        button.value = value;
+        button.onclick = () => {
+          selectedKey = value;
+          show("cloud");
+          renderProject();
+        };
+        group.append(button);
       }
-      if (group.children.length) picker.append(group);
+      if (projects.length) picker.append(group);
     }
-    picker.value = entries.has(selected) ? selected : "";
+    if (!entries.has(selectedKey)) selectedKey = "";
     renderProject();
   }
   async function run(action) {
@@ -94,12 +108,12 @@ export function setupCloudView(openLocalProject) {
   get("local-tab").onclick = () => show("local");
   get("cloud-tab").onclick = () => {
     show("cloud");
-    if (!refreshButton.disabled) run({ type: "cloudBrowse" });
+    if (!get("cloud-section").open && !refreshButton.disabled)
+      run({ type: "cloudBrowse" });
   };
   refreshButton.onclick = () => run({ type: "cloudBrowse" });
-  picker.onchange = renderProject;
   copy.onclick = () => {
-    const selected = entries.get(picker.value);
+    const selected = entries.get(selectedKey);
     if (selected)
       run({
         type: "cloudCopy",
@@ -108,7 +122,7 @@ export function setupCloudView(openLocalProject) {
       });
   };
   remove.onclick = () => {
-    const selected = entries.get(picker.value);
+    const selected = entries.get(selectedKey);
     if (selected && confirm(`Delete “${selected.name}” from Cloud?`))
       run({
         type: "cloudDelete",
@@ -120,4 +134,9 @@ export function setupCloudView(openLocalProject) {
     if (area === "local" && changes.cloudCatalog)
       render(changes.cloudCatalog.newValue || []);
   });
+  show("local");
+  return () => {
+    get("local-section").open = true;
+    show("local");
+  };
 }

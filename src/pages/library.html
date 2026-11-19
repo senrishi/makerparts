@@ -12,17 +12,17 @@
       <aside>
         <a class="brand" href="library.html">▧ MakerParts</a>
 
-        <nav class="library-tabs" aria-label="Library views">
-          <button id="local-tab" aria-pressed="true">Local</button>
-          <button id="cloud-tab" aria-pressed="false">Cloud</button>
-        </nav>
-        <label id="local-nav"
-          >Project<select id="local-project"></select
-        ></label>
-        <label id="cloud-nav" hidden
-          >Project<select id="cloud-project"></select
-        ></label>
         <button id="new-project" class="primary">＋ New project</button>
+        <nav class="library-sections" aria-label="Library views">
+          <details id="local-section" open>
+            <summary id="local-tab">Local</summary>
+            <div id="local-project" class="sidebar-projects"></div>
+          </details>
+          <details id="cloud-section">
+            <summary id="cloud-tab">Cloud</summary>
+            <div id="cloud-project" class="sidebar-projects"></div>
+          </details>
+        </nav>
       </aside>
       <main class="library" id="local-view">
         <header class="library-header">

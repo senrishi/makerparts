@@ -27,6 +27,7 @@ function edit(part = {}) {
   $("#editor").showModal();
 }
 function selectList(id) {
+  showLocal();
   selected = id;
   $("#search").value = "";
   $("#category-filter").value = "";
@@ -42,12 +43,18 @@ function render() {
   )
     selected = "";
   const picker = $("#local-project");
-  picker.replaceChildren(
-    new Option("All projects", ""),
-    new Option("Miscellaneous", MISC_ID),
-    ...state.projects.map((project) => new Option(project.name, project.id)),
-  );
-  picker.value = selected;
+  picker.replaceChildren();
+  for (const { id, name } of [
+    { id: "", name: "All projects" },
+    { id: MISC_ID, name: "Miscellaneous" },
+    ...state.projects,
+  ]) {
+    const button = el("button", name);
+    button.type = "button";
+    if (id === selected) button.setAttribute("aria-current", "true");
+    button.onclick = () => selectList(id);
+    picker.append(button);
+  }
   const project = state.projects.find((p) => p.id === selected);
   $("#heading").textContent =
     project?.name || (selected === MISC_ID ? "Miscellaneous" : "Projects");
@@ -221,14 +228,13 @@ $("#delete-project").onclick = async () => {
     message(e.message);
   }
 };
-$("#local-project").onchange = (event) => selectList(event.target.value);
 api.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && changes.library) {
     state = changes.library.newValue;
     render();
   }
 });
-setupCloudView(selectList);
+const showLocal = setupCloudView(selectList);
 try {
   state = await request({ type: "read" });
   render();

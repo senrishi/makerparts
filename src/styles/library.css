@@ -516,30 +516,47 @@ dialog::backdrop {
   }
 }
 
-.library-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin: 24px 0 12px;
+.library-sections {
+  display: block;
+  min-height: 0;
+  overflow-y: auto;
 }
 
-.library-tabs button {
-  text-align: center;
-  border: 1px solid currentColor;
+.library-sections details + details {
+  margin-top: 8px;
 }
 
-.library-tabs button[aria-pressed="true"] {
-  font-weight: 700;
+.library-sections summary {
+  padding: 8px 10px;
+  border: 1px solid #8886;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.library-sections :is(summary[data-current], button[aria-current]) {
   background: #8884;
+  font-weight: 700;
+}
+
+.sidebar-projects,
+.sidebar-device {
+  display: grid;
+  gap: 3px;
+}
+
+.sidebar-projects {
+  padding: 4px 0 4px 14px;
+}
+
+.sidebar-device p {
+  margin: 8px 0 2px;
+  overflow-wrap: anywhere;
 }
 
 #cloud-parts .part-card {
   flex-wrap: wrap;
   justify-content: space-between;
-}
-
-.app > aside .library-tabs {
-  flex: 0 0 auto;
 }
 
 .app > aside > .settings-link {
