@@ -7,8 +7,11 @@ export function libraryAction(action) {
   const job = queue.then(async () => {
     const data = await api.storage.local.get(["library", "cloud"]);
     const state = data.library || emptyState();
-    if (action.type.startsWith("cloud"))
-      return cloudAction(action, state, data.cloud);
+    if (action.type.startsWith("cloud")) {
+      const result = await cloudAction(action, state, data.cloud);
+      if (action.type === "cloudCopy" && result.id) scheduleSync();
+      return result;
+    }
     if (action.type === "read") return state;
     const next = mutate(state, action);
     await api.storage.local.set({ library: next });

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+- Added separate Local and Cloud project views and browser groups.
+- Added independent project deletion and copying from Cloud to Local.
+- Moved local backup import and export to Settings.
+
 ## 0.1.8
 
 - Redesigned Cloud sync settings around automatic sync and a single Sync now action.

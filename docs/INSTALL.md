@@ -25,6 +25,8 @@ The signed Firefox build targets Firefox 140 and newer. The separate Mercury-com
 
 ## Your library
 
-Chrome and Firefox store separate copies of your library in their own browser profiles; the extension does not sync them. Use **Export backup** in the project library to create a JSON backup and **Import backup** to replace the library in another profile. Import asks for confirmation before replacing data.
+Each browser profile has its own Local library. Sign in to view projects from all connected browsers in the Cloud tab. Use **Copy to Local** to bring a cloud project into this browser. Use **Settings → Local backups** to export or import a JSON backup. Import asks for confirmation before replacing data.
+
+Update all connected browsers before enabling sync with 0.1.9. Earlier versions use a shared library format and can overwrite browser grouping if they keep syncing.
 
 Updating MakerParts with the same extension ID preserves its library. Uninstalling the extension or deleting its browser profile may remove the library, so keep a backup if the data matters to you.

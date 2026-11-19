@@ -12,19 +12,19 @@
       <aside>
         <a class="brand" href="library.html">▧ MakerParts</a>
 
+        <nav class="library-tabs" aria-label="Library views">
+          <button id="local-tab" aria-pressed="true">Local</button>
+          <button id="cloud-tab" aria-pressed="false">Cloud</button>
+        </nav>
+        <label id="local-nav"
+          >Project<select id="local-project"></select
+        ></label>
+        <label id="cloud-nav" hidden
+          >Project<select id="cloud-project"></select
+        ></label>
         <button id="new-project" class="primary">＋ New project</button>
-        <nav id="projects" aria-label="Projects"></nav>
-        <div class="backup">
-          <button id="export">Export backup</button
-          ><label class="file-button"
-            >Import backup<input
-              id="import"
-              type="file"
-              accept="application/json,.json"
-          /></label>
-        </div>
       </aside>
-      <main class="library">
+      <main class="library" id="local-view">
         <header class="library-header">
           <div>
             <h1 id="heading">Projects</h1>
@@ -74,6 +74,20 @@
         </div>
         <p id="message" role="status" aria-live="polite"></p>
         <div id="parts"></div>
+      </main>
+      <main class="library" id="cloud-view" hidden>
+        <header class="library-header">
+          <h1 id="cloud-heading">Cloud projects</h1>
+          <div class="actions">
+            <button id="cloud-refresh">Refresh</button>
+            <button id="cloud-copy" class="primary" hidden>
+              Copy to Local
+            </button>
+            <button id="cloud-delete" hidden>Delete cloud project</button>
+          </div>
+        </header>
+        <p id="cloud-message" role="status"></p>
+        <div id="cloud-parts"></div>
       </main>
     </div>
     <dialog id="editor">

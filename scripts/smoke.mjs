@@ -528,26 +528,18 @@ await clearReload;
 assert.equal(cartPayload.items.length, 0);
 assert.equal(clearDialogs, 0);
 assert.equal(clears, 2);
-// A long project and long navigation must not push backup/settings off screen.
+// A long project must not push the sidebar Settings link off screen.
 await page.setViewportSize({ width: 1280, height: 700 });
 await page.locator("#parts").evaluate((root) => {
   const card = root.querySelector(".part-card");
   for (let i = 0; i < 25; i++) root.append(card.cloneNode(true));
 });
-await page.locator("nav").evaluate((nav) => {
-  const button = nav.lastElementChild;
-  for (let i = 0; i < 40; i++) nav.append(button.cloneNode(true));
-});
 await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 const side = await page.locator("aside").boundingBox();
-const exportBounds = await page
-  .getByRole("button", { name: "Export backup" })
-  .boundingBox();
 const settingsBounds = await page
   .getByRole("link", { name: "Settings", exact: true })
   .boundingBox();
 assert.ok(Math.abs(side.y) < 1);
-assert.ok(exportBounds.y >= 0 && exportBounds.y + exportBounds.height <= 700);
 assert.ok(settingsBounds.y + settingsBounds.height <= 700);
 await page.screenshot({ path: "artifacts/previews/sticky-sidebar.png" });
 await context.route("https://example.com/*", (route) =>

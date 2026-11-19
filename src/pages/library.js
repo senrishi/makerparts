@@ -1,3 +1,4 @@
+import { setupCloudView } from "./cloud-library.js";
 import { renderCostOverview } from "../components/cost-overview.js";
 import { renderProjectList } from "../components/project-list.js";
 import { CATEGORIES, totals, MISC_ID } from "../core/model.js";
@@ -40,30 +41,13 @@ function render() {
     !state.projects.some((p) => p.id === selected)
   )
     selected = "";
-  $("#projects").replaceChildren();
-  const nav = (id, name) => {
-    const b = el(
-      "button",
-      name,
-      [selected === id ? "selected" : "", id === "" ? "nav-home" : ""]
-        .filter(Boolean)
-        .join(" "),
-    );
-    if (id === "") {
-      b.setAttribute("aria-label", "Projects");
-      const icon = el("span", "⌂", "home-icon");
-      icon.setAttribute("aria-hidden", "true");
-      b.prepend(icon);
-    }
-    if (selected === id) b.setAttribute("aria-current", "page");
-    b.onclick = () => {
-      selectList(id);
-    };
-    $("#projects").append(b);
-  };
-  nav("", "Projects");
-  nav(MISC_ID, "Miscellaneous");
-  state.projects.forEach((p) => nav(p.id, p.name));
+  const picker = $("#local-project");
+  picker.replaceChildren(
+    new Option("All projects", ""),
+    new Option("Miscellaneous", MISC_ID),
+    ...state.projects.map((project) => new Option(project.name, project.id)),
+  );
+  picker.value = selected;
   const project = state.projects.find((p) => p.id === selected);
   $("#heading").textContent =
     project?.name || (selected === MISC_ID ? "Miscellaneous" : "Projects");
@@ -237,50 +221,14 @@ $("#delete-project").onclick = async () => {
     message(e.message);
   }
 };
-$("#export").onclick = async () => {
-  try {
-    const latest = await request({ type: "read" });
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(latest, null, 2)], { type: "application/json" }),
-    );
-    const a = el("a");
-    a.href = url;
-    a.download = `makerparts-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  } catch (e) {
-    message(e.message);
-  }
-};
-$("#import").onchange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    if (file.size > 10_000_000)
-      throw Error("Backup is too large (maximum 10 MB).");
-    const imported = JSON.parse(await file.text());
-    if (
-      confirm(
-        "Replace your current library with this backup? Export your current library first to keep it.",
-      )
-    ) {
-      state = await request({ type: "import", state: imported });
-      selected = "";
-      render();
-      message("Backup restored.");
-    }
-  } catch (e) {
-    message(e.message);
-  } finally {
-    e.target.value = "";
-  }
-};
+$("#local-project").onchange = (event) => selectList(event.target.value);
 api.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && changes.library) {
     state = changes.library.newValue;
     render();
   }
 });
+setupCloudView(selectList);
 try {
   state = await request({ type: "read" });
   render();

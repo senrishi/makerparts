@@ -68,7 +68,21 @@
           <button data-action="cloudLogout" hidden>Sign out</button>
         </footer>
       </section>
+      <section class="settings-card">
+        <h2>Local backups</h2>
+        <div class="actions">
+          <button id="export-backup">Export backup</button>
+          <label class="file-button"
+            >Import backup<input
+              id="import-backup"
+              type="file"
+              accept=".json,application/json"
+          /></label>
+        </div>
+        <p id="backup-status" role="status"></p>
+      </section>
     </main>
+    <script type="module" src="backup-settings.js"></script>
     <script type="module" src="sync-settings.js"></script>
   </body>
 </html>

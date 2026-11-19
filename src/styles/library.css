@@ -515,3 +515,33 @@ dialog::backdrop {
     padding-top: 16px;
   }
 }
+
+.library-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin: 24px 0 12px;
+}
+
+.library-tabs button {
+  text-align: center;
+  border: 1px solid currentColor;
+}
+
+.library-tabs button[aria-pressed="true"] {
+  font-weight: 700;
+  background: #8884;
+}
+
+#cloud-parts .part-card {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.app > aside .library-tabs {
+  flex: 0 0 auto;
+}
+
+.app > aside > .settings-link {
+  margin-top: auto;
+}

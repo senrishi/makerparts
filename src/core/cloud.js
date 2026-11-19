@@ -1,6 +1,11 @@
-import { canonical, mergeLibraries } from "./cloud-merge.js";
+import {
+  canonical,
+  encodeDevices,
+  readDevices,
+  updateDevice,
+} from "./cloud-projects.js";
 import { api } from "./api.js";
-import { emptyState, validateState } from "./model.js";
+import { emptyState, MISC_ID, validateState } from "./model.js";
 
 export const origin = "https://lwhmajqzjhegqytgfsxb.supabase.co";
 const key = "sb_publishable_aycKOuQFmD_IauvMs8JvYw_lJXrPZ4b";
@@ -34,22 +39,11 @@ async function call(path, body, token) {
   return response.json();
 }
 
-async function digest(value) {
-  const json = canonical(value);
-  const hash = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(json),
-  );
-  return Array.from(new Uint8Array(hash), (byte) =>
-    byte.toString(16).padStart(2, "0"),
-  ).join("");
-}
-
 const storage = api.storage.local;
 
 export async function cloudAction(action, library, cloud) {
   if (action.type === "cloudLogout") {
-    await storage.remove("cloud");
+    await storage.remove(["cloud", "cloudCatalog"]);
     return { message: "Signed out. Library available on this device." };
   }
   if (action.type === "cloudStatus") return status(cloud);
@@ -64,10 +58,17 @@ export async function cloudAction(action, library, cloud) {
       throw error;
     });
     if (cloud?.session.user.id === session.user.id) cloud.session = session;
-    else cloud = { session };
+    else {
+      cloud = { session };
+      await storage.remove("cloudCatalog");
+    }
     await storage.set({ cloud });
   }
-  if (!cloud) return status(cloud);
+  if (!cloud) {
+    if (["cloudBrowse", "cloudCopy", "cloudDelete"].includes(action.type))
+      throw Error("Sign in from Settings to view cloud projects.");
+    return status(cloud);
+  }
   try {
     await checkConsent();
     let session = cloud.session;
@@ -82,31 +83,84 @@ export async function cloudAction(action, library, cloud) {
       cloud.session = session;
       await storage.set({ cloud });
     }
-    const localHash = await digest(library);
+    let { cloudDevice } = await storage.get("cloudDevice");
+    if (!cloudDevice) {
+      const browser = globalThis.browser ? "Firefox" : "Chrome";
+      cloudDevice = { id: crypto.randomUUID(), label: browser };
+      await storage.set({ cloudDevice });
+    }
+    const { cloudProgress = {} } = await storage.get("cloudProgress");
+    const account = session.user.id;
+    const previous = cloudProgress[account] || emptyState();
     for (let attempt = 0; attempt < 2; attempt++) {
       const [remote] = await call(
         "/rest/v1/libraries?select=revision,library",
         undefined,
         session.access_token,
       );
-      const hosted = remote ? validateState(remote.library) : emptyState();
-      const hostedHash = await digest(hosted);
-      const base =
-        cloud.baseline ??
-        (cloud.hash === localHash
-          ? library
-          : cloud.hash === hostedHash
-            ? hosted
-            : emptyState());
-      const next = validateState(mergeLibraries(base, library, hosted));
-      const nextHash = await digest(next);
+      const devices = readDevices(remote?.library || emptyState());
+      const original = canonical(devices);
+      if (action.type === "cloudCopy") {
+        const source = devices.find(
+          (device) => device.id === action.deviceId,
+        )?.snapshot;
+        const project = source?.projects.find(
+          (item) => item.id === action.projectId,
+        );
+        const misc = action.projectId === MISC_ID;
+        if (!source || (!project && !misc))
+          throw Error("That cloud project is no longer available.");
+        const next = structuredClone(library);
+        const id = crypto.randomUUID();
+        const title = project?.name ?? "Miscellaneous";
+        let name = title;
+        for (
+          let i = 2;
+          next.projects.some(
+            (item) => item.name.toLowerCase() === name.toLowerCase(),
+          );
+          i++
+        )
+          name = `${title} (${i})`;
+        next.projects.push({ id, name });
+        next.parts.push(
+          ...source.parts
+            .filter((part) => part.projectId === action.projectId)
+            .map((part) => ({
+              ...part,
+              id: crypto.randomUUID(),
+              projectId: id,
+            })),
+        );
+        next.lastProjectId = id;
+        await storage.set({ library: validateState(next) });
+        return { id };
+      }
+      let device = devices.find((item) => item.id === cloudDevice.id);
+      if (!device) {
+        device = { ...cloudDevice, snapshot: emptyState() };
+        devices.push(device);
+      }
+      device.snapshot = updateDevice(device.snapshot, library, previous);
+      if (action.type === "cloudDelete") {
+        const target = devices.find((item) => item.id === action.deviceId);
+        if (target) {
+          const { snapshot } = target;
+          snapshot.projects = snapshot.projects.filter(
+            (p) => p.id !== action.projectId,
+          );
+          snapshot.parts = snapshot.parts.filter(
+            (p) => p.projectId !== action.projectId,
+          );
+        }
+      }
       try {
-        if (nextHash !== hostedHash) {
+        if (canonical(devices) !== original) {
           await call(
             "/rest/v1/rpc/save_library",
             {
               expected_revision: remote?.revision ?? 0,
-              new_library: next,
+              new_library: encodeDevices(devices),
             },
             session.access_token,
           );
@@ -115,18 +169,25 @@ export async function cloudAction(action, library, cloud) {
         if (error.status === 409 && attempt === 0) continue;
         throw error;
       }
-      cloud.baseline = next;
+      cloudProgress[account] = {
+        version: 1,
+        projects: library.projects,
+        parts: library.parts,
+      };
+      delete cloud.baseline;
       delete cloud.hash;
       delete cloud.revision;
       delete cloud.conflict;
       cloud.reconnect = false;
       cloud.message = "Last synced " + new Date().toLocaleString();
-      await storage.set(
-        nextHash === localHash ? { cloud } : { cloud, library: next },
-      );
+      await storage.set({ cloud, cloudProgress, cloudCatalog: devices });
+      if (action.type === "cloudBrowse" || action.type === "cloudDelete")
+        return { devices };
       break;
     }
   } catch (error) {
+    if (["cloudBrowse", "cloudCopy", "cloudDelete"].includes(action.type))
+      throw error;
     delete cloud.conflict;
     cloud.reconnect =
       error.status === 401 ||

@@ -74,7 +74,13 @@ api.runtime.onMessage.addListener((message, sender, respond) => {
   if (!message.action || typeof message.action.type !== "string") return;
   if (
     message.action.type.startsWith("cloud") &&
-    sender.url !== api.runtime.getURL("pages/settings.html")
+    sender.url?.split("#")[0] !== api.runtime.getURL("pages/settings.html") &&
+    !(
+      ["cloudBrowse", "cloudCopy", "cloudDelete"].includes(
+        message.action.type,
+      ) &&
+      sender.url?.split("#")[0] === api.runtime.getURL("pages/library.html")
+    )
   )
     return;
   const job = libraryAction(message.action);
