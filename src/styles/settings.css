@@ -137,3 +137,53 @@ aside > .settings-link {
 #sync-login button {
   justify-self: start;
 }
+
+.settings-page {
+  font-size: 1rem;
+}
+
+.settings-page :is(label, button, .muted, header > a:last-child) {
+  font-size: 0.875rem;
+}
+
+.settings-page :is(input, select, #sync-login button) {
+  font-size: 1rem;
+}
+
+.settings-page .actions {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.settings-page .actions button {
+  min-height: 42px;
+  font-weight: 600;
+}
+
+.sync-footer {
+  border: 1px solid #8886;
+  border-inline-start-width: 4px;
+  border-radius: 8px;
+  background: #8881;
+  padding: 12px 16px;
+}
+
+.sync-state {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sync-state strong {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 3px;
+}
+
+.sync-state #sync-status {
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+#backup-status:empty {
+  display: none;
+}

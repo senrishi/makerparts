@@ -1,6 +1,8 @@
 import { api, request } from "../core/api.js";
-import { MISC_ID, validUrl } from "../core/model.js";
-import { money } from "../core/format.js";
+import { CATEGORIES, MISC_ID } from "../core/model.js";
+import { renderProjectList } from "../components/project-list.js";
+import { renderProjectDetails } from "../components/project-details.js";
+import { renderPartList } from "../components/part-list.js";
 import { el } from "../components/dom.js";
 
 export function setupCloudView(openLocalProject) {
@@ -14,6 +16,18 @@ export function setupCloudView(openLocalProject) {
   };
   let entries = new Map();
   let selectedKey = "";
+  let deviceGroups = [];
+  for (const category of CATEGORIES)
+    get("cloud-category").append(new Option(category));
+  for (const id of ["cloud-search", "cloud-category", "cloud-status"])
+    get(id).addEventListener("input", renderProject);
+  function open(key) {
+    selectedKey = key;
+    for (const id of ["cloud-search", "cloud-category", "cloud-status"])
+      get(id).value = "";
+    show("cloud");
+    renderProject();
+  }
   function show(tab) {
     const cloud = tab === "cloud";
     get("local-view").hidden = cloud;
@@ -29,30 +43,49 @@ export function setupCloudView(openLocalProject) {
       else button.removeAttribute("aria-current");
     }
     copy.hidden = remove.hidden = !selected;
+    get("cloud-totals").hidden = get("cloud-toolbar").hidden = !selected;
+    get("cloud-summary").textContent = "";
     get("cloud-heading").textContent = selected?.name || "Cloud projects";
     const root = get("cloud-parts");
     root.replaceChildren();
-    if (!selected) return;
-    if (!selected.parts.length)
-      root.append(el("p", "No parts in this project.", "muted"));
-    for (const part of selected.parts) {
-      const link = el("a", part.name, "part-name");
-      link.href = validUrl(part.url);
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      const price =
-        part.price === null ? "Unpriced" : money(part.price, part.currency);
-      const row = el("article", undefined, "part-card");
-      row.append(
-        link,
-        el("span", `${part.category} · ${part.quantity} × ${price}`, "muted"),
-      );
-      root.append(row);
+    if (!selected) {
+      for (const { deviceId, label, snapshot, projects } of deviceGroups) {
+        const section = el("section", undefined, "cloud-device-projects");
+        const cards = el("div");
+        section.append(el("h2", label), cards);
+        renderProjectList(
+          cards,
+          projects,
+          snapshot.parts,
+          (projectId) => open(JSON.stringify([deviceId, projectId])),
+          { includeMisc: false },
+        );
+        root.append(section);
+      }
+      return;
     }
+    const parts = renderProjectDetails({
+      all: selected.parts,
+      summary: get("cloud-summary"),
+      totalRoot: get("cloud-totals"),
+      search: get("cloud-search").value,
+      category: get("cloud-category").value,
+      status: get("cloud-status").value,
+    });
+    renderPartList({
+      root,
+      parts,
+      hasParts: selected.parts.length > 0,
+      projects: [{ id: selected.projectId, name: selected.name }],
+    });
   }
   function render(devices) {
     entries = new Map();
-    picker.replaceChildren();
+    deviceGroups = [];
+    const home = el("button", "All projects");
+    home.type = "button";
+    home.onclick = () => open("");
+    picker.replaceChildren(home);
     for (const { id: deviceId, label, snapshot } of devices) {
       const group = el("div", undefined, "sidebar-device");
       const heading = el(
@@ -64,6 +97,13 @@ export function setupCloudView(openLocalProject) {
       const projects = [...snapshot.projects];
       if (snapshot.parts.some((part) => part.projectId === MISC_ID))
         projects.push({ id: MISC_ID, name: "Miscellaneous" });
+      if (projects.length)
+        deviceGroups.push({
+          deviceId,
+          label: heading.textContent,
+          snapshot,
+          projects,
+        });
       for (const { id: projectId, name } of projects) {
         const value = JSON.stringify([deviceId, projectId]);
         entries.set(value, {
@@ -75,11 +115,7 @@ export function setupCloudView(openLocalProject) {
         const button = el("button", name);
         button.type = "button";
         button.value = value;
-        button.onclick = () => {
-          selectedKey = value;
-          show("cloud");
-          renderProject();
-        };
+        button.onclick = () => open(value);
         group.append(button);
       }
       if (projects.length) picker.append(group);
@@ -107,7 +143,7 @@ export function setupCloudView(openLocalProject) {
   }
   get("local-tab").onclick = () => show("local");
   get("cloud-tab").onclick = () => {
-    show("cloud");
+    open("");
     if (!get("cloud-section").open && !refreshButton.disabled)
       run({ type: "cloudBrowse" });
   };

@@ -77,7 +77,10 @@
       </main>
       <main class="library" id="cloud-view" hidden>
         <header class="library-header">
-          <h1 id="cloud-heading">Cloud projects</h1>
+          <div>
+            <h1 id="cloud-heading">Cloud projects</h1>
+            <p id="cloud-summary" class="muted"></p>
+          </div>
           <div class="actions">
             <button id="cloud-refresh">Refresh</button>
             <button id="cloud-copy" class="primary" hidden>
@@ -86,6 +89,27 @@
             <button id="cloud-delete" hidden>Delete cloud project</button>
           </div>
         </header>
+        <div id="cloud-totals" class="totals" hidden></div>
+        <div id="cloud-toolbar" class="toolbar" hidden>
+          <input
+            id="cloud-search"
+            type="search"
+            placeholder="Search parts, notes or stores…"
+            aria-label="Search cloud parts"
+          />
+          <select
+            id="cloud-category"
+            aria-label="Filter cloud parts by category"
+          >
+            <option value="">All categories</option>
+          </select>
+          <select id="cloud-status" aria-label="Filter cloud parts by status">
+            <option value="">Any status</option>
+            <option value="planned">Planned</option>
+            <option value="ordered">Ordered</option>
+            <option value="received">Received</option>
+          </select>
+        </div>
         <p id="cloud-message" role="status"></p>
         <div id="cloud-parts"></div>
       </main>

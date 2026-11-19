@@ -19,7 +19,7 @@ export function renderPartList({
     );
     const b = el("button", "＋ Add your first part", "primary");
     b.onclick = () => onAdd();
-    if (!hasParts) empty.append(b);
+    if (!hasParts && onAdd) empty.append(b);
     root.append(empty);
     return;
   }
@@ -70,8 +70,10 @@ export function renderPartList({
       editButton.onclick = () => onEdit(p);
       const remove = el("button", "Remove");
       remove.onclick = () => onRemove(p);
-      actions.append(editButton, remove);
-      card.append(info, price, status, actions);
+      if (onEdit) actions.append(editButton);
+      if (onRemove) actions.append(remove);
+      card.append(info, price, status);
+      if (actions.children.length) card.append(actions);
       root.append(card);
     }
   }

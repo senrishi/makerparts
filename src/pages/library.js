@@ -1,7 +1,8 @@
 import { setupCloudView } from "./cloud-library.js";
 import { renderCostOverview } from "../components/cost-overview.js";
 import { renderProjectList } from "../components/project-list.js";
-import { CATEGORIES, totals, MISC_ID } from "../core/model.js";
+import { renderProjectDetails } from "../components/project-details.js";
+import { CATEGORIES, MISC_ID } from "../core/model.js";
 import { api, request } from "../core/api.js";
 import { renderPartList } from "../components/part-list.js";
 import { partForm } from "../components/part-form.js";
@@ -75,36 +76,14 @@ function render() {
   }
   $("#rename-project").hidden = $("#delete-project").hidden = !project;
   const all = state.parts.filter((p) => p.projectId === selected);
-  $("#summary").textContent =
-    `${all.length} part${all.length === 1 ? "" : "s"} · ${all.filter((p) => p.status === "received").length} received${selected ? "" : ` · ${state.projects.length} projects`}`;
-  $("#totals").replaceChildren();
-  for (const [currency, total] of Object.entries(totals(all))) {
-    const box = el("div", undefined, "total");
-    box.append(
-      el("span", `${currency} · ESTIMATED TOTAL`, "eyebrow"),
-      el("strong", money(total, currency)),
-    );
-    $("#totals").append(box);
-  }
-  const unknown = all.filter((p) => p.price === null).length;
-  if (unknown)
-    $("#totals").append(
-      el(
-        "p",
-        `${unknown} part${unknown === 1 ? "" : "s"} without a price`,
-        "muted",
-      ),
-    );
-  const query = $("#search").value.toLowerCase();
-  const parts = all.filter(
-    (p) =>
-      (!$("#category-filter").value ||
-        p.category === $("#category-filter").value) &&
-      (!$("#status-filter").value || p.status === $("#status-filter").value) &&
-      [p.name, p.notes, p.url, p.model || "", p.sku || ""].some((v) =>
-        v.toLowerCase().includes(query),
-      ),
-  );
+  const parts = renderProjectDetails({
+    all,
+    summary: $("#summary"),
+    totalRoot: $("#totals"),
+    search: $("#search").value,
+    category: $("#category-filter").value,
+    status: $("#status-filter").value,
+  });
   renderPartList({
     root: $("#parts"),
     parts,

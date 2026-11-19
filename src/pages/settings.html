@@ -64,7 +64,10 @@
           <button class="primary" data-action="cloudSync">Sync now</button>
         </div>
         <footer class="sync-footer">
-          <p id="sync-status" role="status"></p>
+          <div class="sync-state">
+            <strong>Sync status</strong>
+            <p id="sync-status" role="status">Checking sync…</p>
+          </div>
           <button data-action="cloudLogout" hidden>Sign out</button>
         </footer>
       </section>
@@ -72,12 +75,13 @@
         <h2>Local backups</h2>
         <div class="actions">
           <button id="export-backup">Export backup</button>
-          <label class="file-button"
-            >Import backup<input
-              id="import-backup"
-              type="file"
-              accept=".json,application/json"
-          /></label>
+          <button id="choose-backup">Import backup</button>
+          <input
+            id="import-backup"
+            type="file"
+            accept=".json,application/json"
+            hidden
+          />
         </div>
         <p id="backup-status" role="status"></p>
       </section>

@@ -21,6 +21,7 @@ get("export-backup").onclick = async () => {
     message(error.message);
   }
 };
+get("choose-backup").onclick = () => get("import-backup").click();
 get("import-backup").onchange = async ({ target }) => {
   const file = target.files[0];
   if (!file) return;
