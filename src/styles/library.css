@@ -526,8 +526,7 @@ dialog::backdrop {
   margin-top: 10px;
 }
 
-.library-sections summary,
-.library-sections button.sidebar-home {
+.library-sections summary {
   padding: 10px 12px;
   border: 1px solid #8886;
   border-radius: 8px;
@@ -567,6 +566,20 @@ dialog::backdrop {
   border-inline-start: 4px solid currentColor;
   background: #8884;
   font-weight: 700;
+}
+
+.library-sections button.sidebar-home {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.library-sections button.sidebar-home[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .sidebar-projects {
